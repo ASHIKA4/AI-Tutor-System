@@ -1,0 +1,9 @@
+.teacher-dashboard .stat-card {
+    border-left: 4px solid #0063a0 !important;
+  }
+  
+  .task-list, .activity-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  

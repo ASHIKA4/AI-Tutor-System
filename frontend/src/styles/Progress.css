@@ -1,0 +1,26 @@
+
+.custom-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 99, 160, 0.1);
+    border: none;
+    transition: transform 0.3s ease;
+  }
+  
+  .custom-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card-header {
+    background-color: #e0f2ff;
+    border-bottom: 1px solid #d0e9ff;
+  }
+  
+  .progress-bar {
+    background-color: #0063a0 !important;
+  }
+  
+  .badge {
+    font-size: 1rem;
+    padding: 0.6em 1.2em;
+  }
+  

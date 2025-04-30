@@ -1,0 +1,200 @@
+/* Container padding */
+.askai-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* Chat card */
+  .chat-card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Chat body scrolling */
+  .chat-body {
+    background: #fafafa;
+    padding-top: 1rem;
+  }
+  
+  /* Chat bubbles */
+  .chat-bubble {
+    max-width: 70%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  
+  /* User bubble (right) */
+  .chat-bubble.user {
+    background-color: #0063a0;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 16px;
+  }
+  
+  /* AI bubble (left) */
+  .chat-bubble.ai {
+    background-color: #f1f3f5;
+    color: #212529;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 16px;
+  }
+  
+  /* Typing indicator dots */
+  .chat-bubble.typing-indicator {
+    display: flex;
+    gap: 4px;
+    background: transparent;
+    padding: 0;
+  }
+  .chat-bubble.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background: #adb5bd;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+  }
+  .chat-bubble.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .chat-bubble.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  /* Simple bounce keyframes */
+  @keyframes bounce {
+    to {
+      opacity: 0.3;
+      transform: translateY(-4px);
+    }
+  }
+  
+  /* History items */
+  .history-item {
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .history-item:hover {
+    background: #e9ecef;
+  }
+  
+  /* Suggestions buttons */
+  .suggestions-card .btn {
+    text-align: left;
+    color: #0063a0;
+    border-color: #0063a0;
+  }
+  .suggestions-card .btn:hover {
+    background: rgba(0, 99, 160, 0.1);
+    color: white;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 991px) {
+    .chat-card {
+      margin-bottom: 1.5rem;
+      height: auto !important;
+    }
+  }
+/* Container padding */
+.askai-container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  /* Chat card */
+  .chat-card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Chat body scrolling */
+  .chat-body {
+    background: #fafafa;
+    padding-top: 1rem;
+  }
+  
+  /* Chat bubbles */
+  .chat-bubble {
+    max-width: 70%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  
+  /* User bubble (right) */
+  .chat-bubble.user {
+    background-color: #0063a0;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 16px;
+  }
+  
+  /* AI bubble (left) */
+  .chat-bubble.ai {
+    background-color: #f1f3f5;
+    color: #212529;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 16px;
+  }
+  
+  /* Typing indicator dots */
+  .chat-bubble.typing-indicator {
+    display: flex;
+    gap: 4px;
+    background: transparent;
+    padding: 0;
+  }
+  .chat-bubble.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background: #adb5bd;
+    border-radius: 50%;
+    animation: bounce 0.6s infinite alternate;
+  }
+  .chat-bubble.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  .chat-bubble.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  /* Simple bounce keyframes */
+  @keyframes bounce {
+    to {
+      opacity: 0.3;
+      transform: translateY(-4px);
+    }
+  }
+  
+  /* History items */
+  .history-item {
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .history-item:hover {
+    background: #e9ecef;
+  }
+  
+  /* Suggestions buttons */
+  .suggestions-card .btn {
+    text-align: left;
+    color: #0063a0;
+    border-color: #0063a0;
+  }
+  .suggestions-card .btn:hover {
+    background: rgba(0, 99, 160, 0.1);
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 991px) {
+    .chat-card {
+      margin-bottom: 1.5rem;
+      height: auto !important;
+    }
+  }
+h1{
+    color: #0063a0;
+}

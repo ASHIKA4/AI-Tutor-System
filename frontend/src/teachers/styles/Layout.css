@@ -1,0 +1,8 @@
+.main-layout {
+    min-height: 100vh;
+    display: flex;
+  }
+  .content-section {
+    background-color: #f8f9fa;
+  }
+  

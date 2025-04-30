@@ -1,0 +1,50 @@
+.navbar {
+  background: linear-gradient(to right, #3c7396, #f8f9fa);
+  transition: all 0.3s ease;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  z-index: 1030;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+  color: #333;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: #0063a0;
+  text-decoration: underline;
+}
+
+.btn-dark {
+  background-color: #0063a0;
+  border: none;
+}
+
+.btn-dark:hover {
+  background-color: white;
+  border: #0063a0;
+  border-width: 1px;
+  border-style: groove;
+  color: #0063a0;
+}
+
+.btn-link:hover {
+  text-decoration: none;
+  color: #0063a0;
+}
+
+.customNav {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-center {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}

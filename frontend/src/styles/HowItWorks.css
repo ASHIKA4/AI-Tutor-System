@@ -1,0 +1,175 @@
+/* HowItWorks.css */
+.how-it-works-timeline {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: #f7f7f7; /* Light background for contrast */
+}
+
+.timeline-title {
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #0063a0; /* Primary color */
+  margin-bottom: 16px;
+}
+
+.timeline-subtitle {
+  text-align: center;
+  font-size: 18px;
+  color: #4a5568;
+  max-width: 600px;
+  margin: 0 auto 50px;
+  line-height: 1.5;
+}
+
+.timeline-steps {
+  position: relative;
+  padding: 20px 0;
+}
+
+.timeline-steps::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: #e2e8f0;
+  transform: translateX(-50%);
+}
+
+.timeline-step {
+  position: relative;
+  width: 50%;
+  padding: 20px 40px;
+  box-sizing: border-box;
+  margin-bottom: 40px;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; /* Smooth transition */
+}
+
+.timeline-step.left {
+  left: 0;
+  text-align: right;
+}
+
+.timeline-step.right {
+  left: 50%;
+  text-align: left;
+}
+
+.step-marker {
+  position: absolute;
+  width: 80px; /* Increased icon size */
+  height: 80px; /* Increased icon size */
+  background-color: #0063a0; /* Custom color for the icon */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem; /* Increased font size */
+  font-weight: bold;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.timeline-step.left .step-marker {
+  right: -40px; /* Adjusted position for larger icon */
+}
+
+.timeline-step.right .step-marker {
+  left: -40px; /* Adjusted position for larger icon */
+}
+
+.step-content {
+  display: inline-block;
+  max-width: 400px;
+}
+
+.step-title {
+  font-size: 24px; /* Increased font size */
+  font-weight: 600;
+  color: #2d3748; /* Dark gray text color */
+  margin: 0 0 8px 0;
+}
+
+.step-description {
+  font-size: 16px;
+  color: #4a5568;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* AOS Animations */
+[data-aos="fade-right"] {
+  opacity: 0;
+  transform: translateX(100px);
+  transition: opacity 0.5s, transform 0.5s ease-out;
+}
+
+[data-aos="fade-right"].aos-animate {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+[data-aos="fade-left"] {
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: opacity 0.5s, transform 0.5s ease-out;
+}
+
+[data-aos="fade-left"].aos-animate {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Hover effect */
+.timeline-step:hover {
+  transform: translateY(-10px); /* Smooth hover effect */
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .timeline-steps::before {
+    left: 20px;
+  }
+
+  .timeline-step {
+    width: 100%;
+    padding: 20px 0 20px 50px;
+    left: 0 !important;
+    text-align: left !important;
+  }
+
+  .timeline-step.left .step-marker,
+  .timeline-step.right .step-marker {
+    left: 4px;
+    right: auto;
+  }
+
+  .timeline-title {
+    font-size: 28px;
+  }
+
+  .timeline-subtitle {
+    font-size: 16px;
+  }
+
+  .step-marker {
+    width: 70px; /* Adjusted icon size for mobile */
+    height: 70px; /* Adjusted icon size for mobile */
+    font-size: 1.8rem; /* Adjusted font size for mobile */
+  }
+
+  .step-title {
+    font-size: 1.6rem;
+  }
+
+  .step-description {
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,71 @@
+/* Sidebar.css */
+
+/* General sidebar layout */
+.sidebar {
+    width: 250px !important;
+    min-width: 250px;
+    max-width: 250px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    border-right: 1px solid #dee2e6;
+    padding: 1rem;
+    overflow-y: auto;
+    flex-shrink: 0;
+    scrollbar-width: none;
+  }
+  
+  /* Sidebar nav items */
+  .sidebar .nav-link {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  /* Hover effect */
+  .sidebar .nav-link:hover {
+    background-color: #e0f2ff;
+    color: #0063a0 !important;
+    font-weight: 500;
+  }
+  
+  /* Active nav link */
+  .sidebar .nav-link.text-primary {
+   
+    color: #0063a0 !important;
+    font-weight: 600;
+  }
+  
+  /* Profile section at bottom */
+  .profile {
+    margin-top: 16rem;
+    border-top: 1px solid #dee2e6;
+    padding-top: 1.2rem;
+    text-align: left;
+  }
+  
+  /* Logo */
+  .sidebar img {
+    max-height: 40px;
+  }
+  
+  /* Responsive optimization */
+  @media (max-width: 992px) {
+    .sidebar {
+      position: fixed;
+      left: -260px;
+      z-index: 1000;
+      transition: all 0.3s ease-in-out;
+    }
+  
+    .sidebar.open {
+      left: 0;
+    }
+  }
+  
+  

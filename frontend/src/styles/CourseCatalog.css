@@ -1,0 +1,178 @@
+
+  .course-placeholder-img {
+    height: 180px;
+    background-color: #f1f3f5;
+    font-size: 1.2rem;
+  }
+  
+  .search-box {
+    flex-grow: 1;
+    min-width: 220px;
+  }
+  /* Ensure full-width for search, categories, and levels */
+.search-box input {
+  width: 100%;
+}
+
+@media (max-width: 576px) {
+  .content {
+    padding: 1rem;
+  }
+
+  /* Make the search box full-width */
+  .search-box {
+    width: 100%;
+  }
+
+  /* Adjust button and dropdown spacing */
+  .d-flex {
+    flex-direction: column;
+  }
+
+  .d-flex > * {
+    margin-bottom: 1rem;
+  }
+
+  /* Adjust course card styles for small screens */
+  .card {
+    margin-bottom: 1rem;
+  }
+
+  /* Ensure cards fit well on mobile */
+  .card-img-top {
+    height: 200px;
+    object-fit: cover;
+  }
+}
+
+/* For larger screens, keep the same layout */
+@media (min-width: 768px) {
+  .content {
+    padding: 3rem;
+  }
+
+  /* Adjust card images for better aspect ratio */
+  .card-img-top {
+    height: 250px;
+    object-fit: cover;
+  }
+}
+
+
+/* Course Catalog Styles */
+.course-catalog-container {
+  background-color: #f3f0ff;
+  padding: 30px 0;
+}
+
+.search-box {
+  width: 250px;
+  border-radius: 5px;
+}
+
+.search-box .form-control {
+  border-radius: 5px;
+  padding-left: 15px;
+  border: 1px solid #d1f7e2;
+}
+
+.search-box .form-control:focus {
+  border-color: #0063a0;
+  box-shadow: 0 0 5px rgba(0, 99, 160, 0.5);
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0px 10px 20px rgba(0, 99, 160, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 15px 25px rgba(0, 99, 160, 0.2);
+}
+
+.card-title {
+  font-size: 1.2rem;
+  color: #0063a0;
+  font-weight: 700;
+}
+
+.card-text {
+  font-size: 1rem;
+  color: #495057;
+}
+
+.card .btn-primary {
+  background-color: #0063a0;
+  border: none;
+  border-radius: 25px;
+  padding: 8px 15px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.card .btn-primary:hover {
+  background-color: #004f80;
+}
+
+.dropdown-toggle {
+  background-color: #e0f2ff;
+  border-color: #0063a0;
+  color: white;
+  font-weight: 600;
+}
+
+.dropdown-menu {
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+
+.dropdown-item {
+  color: #0063a0;
+}
+
+.dropdown-item:hover {
+  background-color: #0063a0;
+  color: #ffffff;
+}
+
+/* Layout adjustments */
+.content {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.mb-3 h4 {
+  font-weight: bold;
+  color: #0063a0;
+}
+
+.btn-outline-secondary {
+  border-radius: 25px;
+  border-color: #0063a0;
+  color: #0063a0;
+  font-weight: 600;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #0063a0;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .search-box {
+    width: 100%;
+  }
+
+  .d-flex {
+    flex-direction: column;
+  }
+
+  .dropdown {
+    width: 100%;
+  }
+}

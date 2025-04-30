@@ -1,0 +1,48 @@
+.login-page {
+  background-color: #f8f9fa;
+}
+
+.login-image-wrapper {
+  background-color: #e0f2ff;
+  height: 100%;
+}
+
+.login-side-img {
+  max-width: 90%;
+  height: auto;
+}
+
+.login-form-card {
+  max-width: 400px;
+  width: 100%;
+  background-color: #fff;
+  padding: 2.5rem;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-card .form-control {
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 15px;
+}
+
+.login-form-card .btn-primary {
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+  background-color: #0063a0;
+  border: none;
+}
+
+.login-form-card .btn-primary:hover {
+  background-color: #004f82;
+}
+
+@media (max-width: 768px) {
+  .login-form-card {
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+}

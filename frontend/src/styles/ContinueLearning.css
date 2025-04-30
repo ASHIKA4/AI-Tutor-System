@@ -1,0 +1,62 @@
+/* ContinueLearning.css */
+.card {
+    border-radius: 10px;
+    background-color: #fff;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  h5 {
+    font-size: 1.25rem;
+    color: #0063a0; /* Primary Color */
+  }
+  
+  h6 {
+    font-size: 1rem;
+    color: #495057; /* Secondary Color */
+  }
+  
+  .progress {
+    height: 8px;
+    border-radius: 5px;
+  }
+  
+  .progress-bar {
+    border-radius: 5px;
+  }
+  
+  .btn-outline-primary {
+    color: #0063a0;
+    border-color: #0063a0;
+    border-radius: 5px;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #0063a0;
+    color: white;
+  }
+  
+  @media (max-width: 768px) {
+    .card-body {
+      padding: 15px;
+    }
+  
+    h5 {
+      font-size: 1.1rem;
+    }
+  
+    h6 {
+      font-size: 0.9rem;
+    }
+  
+    .btn-outline-primary {
+      padding: 6px 12px;
+    }
+  }
+  .animated-progress-bar {
+    width: 0;
+    transition: width 1.5s ease-in-out;
+  }
+  

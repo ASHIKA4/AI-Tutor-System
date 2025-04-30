@@ -1,0 +1,35 @@
+.enroll-card {
+    border: none;
+    border-radius: 15px;
+    background-color: #ffffff;
+  }
+  
+  .course-image {
+    height: 250px;
+    object-fit: cover;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .left-section {
+    border-right: 1px solid #e9ecef;
+    padding-right: 2rem;
+  }
+  
+  .form-section {
+    padding-left: 2rem;
+  }
+  
+  @media (max-width: 767px) {
+    .left-section {
+      border-right: none;
+      border-bottom: 1px solid #e9ecef;
+      padding-right: 0;
+      margin-bottom: 2rem;
+    }
+  
+    .form-section {
+      padding-left: 0;
+    }
+  }
+  

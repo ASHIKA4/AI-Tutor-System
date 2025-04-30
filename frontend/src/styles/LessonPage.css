@@ -1,0 +1,80 @@
+.lesson-content h2,
+.lesson-content h3 {
+  margin-top: 1rem;
+}
+
+.lesson-content ul {
+  padding-left: 1.5rem;
+}
+
+.lesson-content li {
+  margin-bottom: 0.5rem;
+}
+
+.aspect-ratio-box {
+  height: 300px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  flex-direction: column;
+}
+
+.hover-link:hover {
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding-left: 4px;
+}
+.lesson-content h2,
+.lesson-content h3 {
+  margin-top: 1rem;
+}
+
+.lesson-content ul {
+  padding-left: 1.5rem;
+}
+
+.lesson-content li {
+  margin-bottom: 0.5rem;
+}
+
+.aspect-ratio-box {
+  height: 300px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  flex-direction: column;
+}
+
+.hover-link:hover {
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding-left: 4px;
+}
+.lesson-title {
+    color: #0063a0;
+    font-weight: bold;
+  }
+  
+  .resource-link {
+    transition: background 0.3s ease;
+  }
+  .resource-link:hover {
+    background-color: #e0f2ff;
+    border-radius: 5px;
+  }
+  
+  .progress-custom .progress-bar {
+    background-color: #0063a0;
+  }
+  
+  .card-shadow {
+    box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.05);
+  }
+  
+  .video-placeholder {
+    background-color: #f3f0ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 250px;
+    border-radius: 8px;
+  }
+  

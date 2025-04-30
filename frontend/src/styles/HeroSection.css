@@ -1,0 +1,62 @@
+/* Existing styles... */
+.hero-section {
+  max-height: 100vh;
+  padding: 60px 0;
+  background: linear-gradient(to right, #f0f4ff, #e0ecff);
+  overflow: hidden;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #222;
+}
+
+.highlight {
+  color: #0063a0;
+  background: linear-gradient(to right, #0063a0, #00c6ff);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-section p {
+  font-size: 1.1rem;
+  max-width: 600px;
+}
+
+.hero-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* 🎯 Custom Button Styles */
+.Login,
+.Join {
+  background-color: #0063a0;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+
+.Login:hover,
+.Join:hover,
+.JoinTeacher:hover {
+  background-color: #004f80;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 99, 160, 0.3);
+}
+/* Existing classes can remain unchanged */
+
+.JoinTeacher {
+  background-color: #0063a0;
+  border: none;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+ 

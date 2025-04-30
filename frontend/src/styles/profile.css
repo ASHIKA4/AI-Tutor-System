@@ -1,0 +1,37 @@
+.profile-container {
+    background-color: #e0f2ff;
+    padding: 2rem;
+    border-radius: 10px;
+  }
+  
+  .profile-tabs .nav-link.active {
+    background-color: #0063a0 !important;
+    color: white !important;
+  }
+  
+  .profile-tabs .nav-link {
+    color: #0063a0;
+    font-weight: 500;
+  }
+  
+  .text-primary {
+    color: #0063a0 !important;
+  }
+  
+  .btn-primary {
+    background-color: #0063a0 !important;
+    border-color: #0063a0 !important;
+  }
+  
+  .btn-outline-secondary {
+    color: #495057;
+    border-color: #495057;
+  }
+  
+  .card {
+    background-color: #f3f0ff;
+    border: 1px solid #d1f7e2;
+  }
+  .profile-tabs .nav-link:hover{
+    color: white;
+  }

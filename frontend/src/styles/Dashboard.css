@@ -1,0 +1,113 @@
+/* General Styles */
+body {
+    background-color: #f3f0ff;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Heading and Button styles */
+  h2 {
+    color: #0063a0;
+    font-weight: bold;
+  }
+  
+  .btn-outline-secondary {
+    border-color: #0063a0;
+    color: #0063a0;
+  }
+  
+  .btn-outline-secondary:hover {
+    background-color: #0063a0;
+    color: #fff;
+  }
+  
+  /* Stats Cards */
+  .stats-card {
+    background-color: #ffffff;
+    border: 1px solid #e0f2ff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stats-card .title {
+    font-size: 1.2rem;
+    color: #495057;
+  }
+  
+  .stats-card .value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #0063a0;
+  }
+  
+  .stats-card .subtitle {
+    font-size: 0.7rem;
+    color: #6c757d;
+  }
+  
+  /* Sections and Cards */
+  .row {
+    margin-top: 20px;
+  }
+  
+  .col-lg-6 {
+    margin-bottom: 20px;
+  }
+  
+  .container {
+    margin-top: 40px;
+  }
+  /* Dashboard.css */
+.stats-card {
+    transition: all 0.3s ease;
+  }
+  
+  .stats-card:hover {
+    transform: scale(1.05); /* Slight zoom effect */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Soft shadow */
+    background-color: #f3f0ff; /* Light background color change on hover */
+  }
+  
+  .stats-card h5, .stats-card p {
+    transition: color 0.3s ease;
+  }
+  
+  .stats-card:hover h5, .stats-card:hover p {
+    color: #0063a0; /* Change the text color to primary on hover */
+  }
+  
+  /* Optional: Style the StatsCard for a more polished look */
+  .stats-card {
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ffffff; /* White background */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Light shadow */
+  }
+  
+  
+  /* AOS Animation Effects */
+  [data-aos="fade-up"] {
+    transition: all 0.5s ease;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 767px) {
+    .col-lg-6 {
+      width: 100%;
+    }
+  
+    .stats-card {
+      margin-bottom: 20px;
+    }
+  }
+  
+  /* Quick Access / Recent Notifications */
+  .quick-access-card,
+  .recent-notifications-card {
+    background-color: #ffffff;
+    border: 1px solid #e0f2ff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  

@@ -1,0 +1,57 @@
+.my-courses-container {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+  }
+  
+  /* Image Placeholder */
+  .card-image-placeholder {
+    background-color: #e9ecef;
+    height: 180px;
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+  }
+  
+  /* Tab Buttons */
+  .tab-buttons .btn {
+    border-radius: 8px;
+    font-weight: 600;
+  }
+  
+  .tab-buttons .btn-primary {
+    background-color: #0063a0;
+    border: none;
+  }
+  
+  .tab-buttons .btn-light {
+    background-color: #f1f3f5;
+    color: #495057;
+    border: none;
+  }
+  
+  /* Progress Bar */
+  .custom-progress .progress-bar {
+    background-color: #0063a0;
+  }
+  
+  /* Card */
+  .course-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+  }
+  
+  /* Button */
+  .course-card .btn-dark {
+    background-color: #000;
+    border: none;
+    font-weight: 600;
+    border-radius: 5px;
+  }
+  .active-tab {
+    font-weight: bold;
+    border: 2px solid #000;
+  }
+  
