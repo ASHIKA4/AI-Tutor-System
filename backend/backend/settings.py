@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,15 +42,31 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'myapp',
-    'rest_framework_simplejwt',
+    
 ]
 
-AUTH_USER_MODEL = 'myapp.CustomUser'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
+
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
     ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'rest_framework.views.exception_handler',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
 }
 
 
@@ -56,12 +74,12 @@ REST_FRAMEWORK = {
 SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
-# CORS_ORIGIN_WHITELIST = [
-#     "http://localhost:3000",
-# ]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -164,3 +182,4 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+

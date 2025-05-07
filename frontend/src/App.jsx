@@ -8,9 +8,9 @@ import Home from './pages/Home'; // Home component (with Dashboard, Course Catal
 import MainLayout from './components/MainLayout';
 import Enroll from './components/Enroll';
 import LessonPage from './components/LessonPage';
-import TeacherDashboard from './teachers/components/TeacherDashboard';
-import MainLayout_Teacher from './teachers/components/MainLayout_Teacher';
+import JoinAsTeacher from './components/JoinAsTeacher';
 import Teacher from './teachers/pages/Teacher';
+import Login_teacher from './components/TeacherLogin';
 
 import AOS from 'aos';
 import './styles/App.css'
@@ -30,6 +30,8 @@ function App() {
       <Route path="/" element={<LandingPage />} />  {/* Landing Page */}
       <Route path="/login" element={<Login />} />  {/* Login Page */}
       <Route path="/register" element={<Register />} />  {/* Register Page */}
+      <Route path="/teacher-register" element={<JoinAsTeacher/>} />
+      <Route path="/teacher-login" element={<Login_teacher/>} />
       <Route path="/Student/*" element={<Home />} />  {/* Home component with nested routes */}
       <Route path="/" element={<MainLayout />}/>
       <Route path="enroll/:id" element={<Enroll />} />

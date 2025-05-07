@@ -38,7 +38,7 @@ const HeroSection = () => {
               <Button className="Join" onClick={() => navigate('/register')}>
                 Join as Student
               </Button>
-              <Button className="JoinTeacher" onClick={() => navigate('/teacher/register')}>
+              <Button className="JoinTeacher" onClick={() => navigate('/teacher-login')}>
                 Join as Teacher
               </Button>
             </div>

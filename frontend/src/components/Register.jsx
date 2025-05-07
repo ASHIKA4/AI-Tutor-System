@@ -19,10 +19,11 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/register/", {
+      const response = await axios.post("http://127.0.0.1:8000/register/", {
         username,
         email,
         password,
+        role: "student",
       });
 
       alert(response.data.message);
@@ -34,45 +35,70 @@ const Register = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 d-flex align-items-center register-page">
-  <div className="row w-100">
-    {/* Left Side Image */}
-    <div className="col-md-6 d-none d-md-flex align-items-center register-image-wrapper">
-  <img src="/images/login.jpg" alt="Illustration" className="register-illustration" />
-</div>
-
-
-    {/* Right Side Registration Form */}
-    <div className="col-md-6 d-flex align-items-center justify-content-center">
-      <div className="register-card w-100 px-4">
-        <h2 className="text-center mb-2">Sign Up</h2>
-        <p className="text-muted text-center mb-4">Create a new account to get started</p>
+    <div className="container-fluid vh-100 d-flex align-items-center justify-content-center register-bg" style={{ backgroundColor: "#e0f2ff" }}>
+      <div className="register-card shadow-lg rounded p-4" style={{ width: "100%", maxWidth: "500px", backgroundColor: "#ffffff", border: "1px solid #ddd" }}>
+        <h2 className="text-center mb-3" style={{ color: "#0063a0" }}>Sign Up</h2>
+        <p className="text-center text-muted mb-4">
+          Create a new account to get started
+        </p>
         <form onSubmit={handleRegister}>
           <div className="mb-3">
-            <label className="form-label">Name</label>
-            <input type="text" className="form-control" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+            <label className="form-label fw-semibold">Name</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              style={{ borderColor: "#0063a0" }}
+            />
           </div>
           <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input type="email" className="form-control" placeholder="your.email@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            <label className="form-label fw-semibold">Email</label>
+            <input
+              type="email"
+              className="form-control"
+              placeholder="your.email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              style={{ borderColor: "#0063a0" }}
+            />
           </div>
           <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input type="password" className="form-control" placeholder="●●●●●●●" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            <label className="form-label fw-semibold">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="●●●●●●●"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              style={{ borderColor: "#0063a0" }}
+            />
           </div>
           <div className="mb-4">
-            <label className="form-label">Confirm Password</label>
-            <input type="password" className="form-control" placeholder="●●●●●●●" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+            <label className="form-label fw-semibold">Confirm Password</label>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="●●●●●●●"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              style={{ borderColor: "#0063a0" }}
+            />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Sign Up</button>
+          <button type="submit" className="btn w-100" style={{ backgroundColor: "#0063a0", color: "#fff" }}>
+            Sign Up
+          </button>
         </form>
         <p className="mt-4 text-center">
-          Already have an account? <a href="/login">Login</a>
+          Already have an account? <a href="/login" style={{ color: "#0063a0", textDecoration: "none" }}>Login</a>
         </p>
       </div>
     </div>
-  </div>
-</div>
   );
 };
 

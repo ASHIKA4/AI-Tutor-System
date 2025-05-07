@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Card, Button, Container, Row, Col, Form } from 'react-bootstrap';
-import "../styles/Enroll.css"
+import { Card, Button, Container, Row, Col, Form, Alert } from 'react-bootstrap';
+import "../styles/Enroll.css";
 
 const Enroll = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const course = location.state?.course;
-
+  const { course } = location.state;
+  
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -15,12 +15,15 @@ const Enroll = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   if (!course) {
     return (
       <Container className="py-5 text-center">
         <h4 className="text-danger">No course data found. Please return to Course Catalog.</h4>
-        <Button variant="secondary" className="mt-3" onClick={() => navigate('/courses')}>
+        <Button variant="secondary" className="mt-3" onClick={() => navigate('/course-calalog')}>
           Back to Courses
         </Button>
       </Container>
@@ -39,7 +42,7 @@ const Enroll = () => {
     return newErrors;
   };
 
-  const handleEnroll = (e) => {
+  const handleEnroll = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length) {
@@ -47,19 +50,68 @@ const Enroll = () => {
       return;
     }
 
-    alert('Enrolled Successfully!');
-    navigate('/courses');
+    setLoading(true);
+    setApiError(null);
+
+    try {
+      // Get student ID from localStorage or wherever you store user data
+      const studentId = localStorage.getItem('studentId'); // Adjust this based on your auth system
+      
+      const enrollmentData = {
+        full_name: formData.fullName,
+        email: formData.email,
+        mobile: formData.mobile,
+        course: course.id,
+        teacher: course.teacher,
+        student: studentId || 1 // Fallback to 1 if no student ID, adjust as needed
+      };
+
+      const response = await fetch('http://127.0.0.1:8000/enroll/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Add authorization header if needed
+          // 'Authorization': `Token ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(enrollmentData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to enroll');
+      }
+
+      // Success - update local storage with enrolled courses
+      const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
+      localStorage.setItem('enrolledCourses', JSON.stringify([...enrolledCourses, course.id]));
+      
+      setSuccess(true);
+      setTimeout(() => {
+        navigate('/courses');
+      }, 2000);
+    } catch (err) {
+      setApiError(err.message || 'An error occurred during enrollment');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Container className="py-5">
       <Card className="p-4 shadow enroll-card">
+        {apiError && <Alert variant="danger">{apiError}</Alert>}
+        {success && (
+          <Alert variant="success">
+            Enrollment successful! Redirecting to courses...
+          </Alert>
+        )}
+        
         <Row>
           {/* Left: Course Info */}
           <Col md={6} className="left-section">
             <div className="image-wrapper mb-3">
               <img
-                src={`/images/${course.image}`}
+                src={course.thumbnail}
                 alt={course.title}
                 className="img-fluid rounded course-image"
               />
@@ -67,9 +119,10 @@ const Enroll = () => {
 
             <h3 className="fw-bold text-primary mb-3">{course.title}</h3>
             <ul className="list-unstyled">
-              <li><strong>Instructor:</strong> {course.instructor}</li>
-              <li><strong>Level:</strong> {course.level}</li>
-              <li><strong>Duration:</strong> {course.duration}</li>
+              <li><strong>Instructor:</strong> Teacher #{course.teacher}</li>
+              <li><strong>Level:</strong> {course.difficulty_level}</li>
+              {/* Duration not available in API - you might want to add it */}
+              <li><strong>Duration:</strong> N/A weeks</li>
             </ul>
             <p className="text-muted mt-3">{course.description}</p>
           </Col>
@@ -88,6 +141,7 @@ const Enroll = () => {
                     onChange={handleChange}
                     isInvalid={!!errors.fullName}
                     placeholder="Enter your full name"
+                    disabled={loading || success}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.fullName}
@@ -103,6 +157,7 @@ const Enroll = () => {
                     onChange={handleChange}
                     isInvalid={!!errors.email}
                     placeholder="Enter your email"
+                    disabled={loading || success}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.email}
@@ -118,6 +173,7 @@ const Enroll = () => {
                     onChange={handleChange}
                     isInvalid={!!errors.mobile}
                     placeholder="Enter your mobile number"
+                    disabled={loading || success}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.mobile}
@@ -125,8 +181,13 @@ const Enroll = () => {
                 </Form.Group>
 
                 <div className="d-grid">
-                  <Button variant="success" size="lg" type="submit">
-                    Confirm Enrollment
+                  <Button 
+                    variant="success" 
+                    size="lg" 
+                    type="submit"
+                    disabled={loading || success}
+                  >
+                    {loading ? 'Processing...' : 'Confirm Enrollment'}
                   </Button>
                 </div>
               </Form>

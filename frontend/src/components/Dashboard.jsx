@@ -10,6 +10,7 @@ import 'aos/dist/aos.css'; // Ensure AOS styles are included
 import '../styles/Dashboard.css'; // Make sure this path is correct for your project structure
 
 const Dashboard = () => {
+  const name=localStorage.getItem("studentname")
   useEffect(() => {
     AOS.init(); // Initialize AOS animations
   }, []);
@@ -17,7 +18,7 @@ const Dashboard = () => {
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2 className="fw-bold" data-aos="fade-up">Welcome back, John!</h2>
+        <h2 className="fw-bold" data-aos="fade-up">Welcome back, {name}!</h2>
         <button className="btn btn-outline-secondary rounded-circle">
           <Bell />
         </button>

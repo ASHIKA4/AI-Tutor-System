@@ -56,7 +56,7 @@ const MyCourses = () => {
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h3 className="fw-bold">My Courses</h3>
-        <Button variant="dark" className="px-4" onClick={() => navigate('/home/course-catalog')}>
+        <Button variant="dark" className="px-4" onClick={() => navigate('/student/course-catalog')}>
           Browse Courses
         </Button>
       </div>
@@ -107,7 +107,7 @@ const MyCourses = () => {
                     <strong>Next:</strong> {course.next}
                   </p>
                   <Button variant="dark" className="w-100" onClick={() =>
-              navigate(`/home/student/course/${course.id}/lesson/1`, { state: { course } })}>
+              navigate(`/student/student/course/${course.id}/lesson/1`, { state: { course } })}>
                     Continue Learning
                   </Button>
                 </Card.Body>

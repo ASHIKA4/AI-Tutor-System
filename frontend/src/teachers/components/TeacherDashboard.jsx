@@ -4,8 +4,11 @@ import { BookOpen, Users, FileText, GraduationCap, Bell, PlusCircle, MessageSqua
 import AOS from "aos";
 import "aos/dist/aos.css";
 import '../../teachers/styles/TeacherDashboard.css';
+import { Link } from 'react-router-dom';
+
 
 const TeacherDashboard = () => {
+  const name=localStorage.getItem("teachername");
   useEffect(() => {
     AOS.init({ duration: 1000 });
   }, []);
@@ -29,16 +32,18 @@ const TeacherDashboard = () => {
     { id: 3, activity: "Quiz completed by 15 students", time: "2 days ago", type: "quiz" },
   ];
 
+
+
   return (
     <Container fluid className="p-4 teacher-dashboard">
       <div className="d-flex justify-content-between align-items-center mb-4" data-aos="fade-up">
         <div>
-          <h2 className="fw-bold">Welcome back, Dr. Chen!</h2>
+          <h2 className="fw-bold">Welcome back, Dr. {name}!</h2>
           <p className="text-muted">Here's what's happening with your courses today.</p>
         </div>
         <div className="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center" style={{ width: "48px", height: "48px" }}>
-          DR
-        </div>
+  {name[0].toUpperCase()}
+</div>
       </div>
 
       <Row className="g-4 mb-4">
@@ -153,24 +158,32 @@ const TeacherDashboard = () => {
         <Card.Body>
           <Row className="g-3">
             <Col sm={6} md={3}>
+            <Link to="/teacher/newcourse" style={{ textDecoration: 'none' }}>
               <Button variant="outline-primary" className="w-100 d-flex flex-column align-items-center p-3">
                 <BookOpen className="mb-2" /> Create Course
               </Button>
+              </Link>
             </Col>
             <Col sm={6} md={3}>
+            <Link to="/teacher/newassignment" style={{ textDecoration: 'none' }}>
               <Button variant="outline-primary" className="w-100 d-flex flex-column align-items-center p-3">
                 <FileText className="mb-2" /> New Assignment
               </Button>
+              </Link>
             </Col>
             <Col sm={6} md={3}>
+            <Link to="/teacher/newquiz" style={{ textDecoration: 'none' }}>
               <Button variant="outline-primary" className="w-100 d-flex flex-column align-items-center p-3">
                 <GraduationCap className="mb-2" /> Create Quiz
               </Button>
+              </Link>
             </Col>
             <Col sm={6} md={3}>
+            <Link to="/teacher/messages" style={{ textDecoration: 'none' }}>
               <Button variant="outline-primary" className="w-100 d-flex flex-column align-items-center p-3">
                 <MessageSquare className="mb-2" /> Send Message
               </Button>
+              </Link>
             </Col>
           </Row>
         </Card.Body>

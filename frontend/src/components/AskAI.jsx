@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+    import React, { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Row,
@@ -31,7 +31,7 @@ export default function AskAI() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef(null);
-
+  
   useEffect(() => {
     AOS.init({ duration: 800, once: false });
   }, []);
@@ -41,30 +41,52 @@ export default function AskAI() {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-
-    const userMsg = { role: 'user', content: input.trim() };
-    setMessages((m) => [...m, userMsg]);
-    setHistory((h) => [
-      { id: Date.now(), question: input.trim(), date: 'Just now' },
-      ...h,
+  
+    const question = input.trim();
+    const userMessage = { role: 'user', content: question };
+  
+    setMessages((prev) => [...prev, userMessage]);
+    setHistory((prev) => [
+      { id: Date.now(), question, date: 'Just now' },
+      ...prev,
     ]);
     setInput('');
     setIsLoading(true);
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMsg = {
-        role: 'ai',
-        content:
-          "I'd be happy to help! Here's a detailed explanation with examples to clarify the concept.",
-      };
-      setMessages((m) => [...m, aiMsg]);
-      setIsLoading(false);
-    }, 1500);
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/chat/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': 'Token YOUR_TOKEN_HERE', // Uncomment if needed
+        },
+        body: JSON.stringify({ message: question }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        const aiMessage = { role: 'ai', content: data.response };
+        setMessages((prev) => [...prev, aiMessage]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { role: 'ai', content: data.detail || 'Something went wrong.' },
+        ]);
+      }
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        { role: 'ai', content: 'Network error. Please try again.' },
+      ]);
+    }
+  
+    setIsLoading(false);
   };
+  
 
   return (
     <Container fluid className="askai-container py-4">

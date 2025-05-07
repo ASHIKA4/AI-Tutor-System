@@ -1,32 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Form, Button, Card, Tabs, Tab } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import '../styles/CoursePage.css'; // We'll create this custom CSS file
+import axios from 'axios';
+import '../styles/CoursePage.css';
 
-const CoursePage = () => {
+const NewCourse = () => {
   const navigate = useNavigate();
+  const teacherId = localStorage.getItem("teacheruserId");
+
+  const [courseId, setCourseId] = useState();
   const [courseImage, setCourseImage] = useState(null);
-  const [lessons, setLessons] = useState([
-    { id: 1, title: "Introduction", type: "video", content: "", duration: "10 min" },
-    { id: 2, title: "Key Concepts", type: "text", content: "", duration: "15 min" },
-  ]);
+  const [activeTab, setActiveTab] = useState('details');
+  const [lessons, setLessons] = useState([]);
+
+  const [courseData, setCourseData] = useState({
+    title: '',
+    description: '',
+    category: '',
+    difficulty_level: '',
+    teacher: teacherId,
+  });
+
+  const [lesson, setLesson] = useState({
+    title: '',
+    description: '',
+    video_url: '',
+    course: null,
+  });
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => setCourseImage(event.target.result);
-      reader.readAsDataURL(file);
+      setCourseImage(file);
     }
   };
 
-  const addLesson = () => {
-    const newId = lessons.length ? Math.max(...lessons.map(l => l.id)) + 1 : 1;
-    setLessons([...lessons, { id: newId, title: `New Lesson ${newId}`, type: "text", content: "", duration: "0 min" }]);
+  const fetchLessons = async (id) => {
+    try {
+      const response = await axios.get(`http://localhost:8000/modules/?course=${id}`);
+      setLessons(response.data);
+    } catch (error) {
+      console.error('Error fetching lessons:', error);
+    }
   };
 
-  const removeLesson = (id) => {
-    setLessons(lessons.filter(l => l.id !== id));
+  const handleNextClick = async () => {
+    const formData = new FormData();
+    formData.append('title', courseData.title);
+    formData.append('description', courseData.description);
+    formData.append('category', courseData.category);
+    formData.append('difficulty_level', courseData.difficulty_level);
+    formData.append('teacher', courseData.teacher);
+
+    if (courseImage) {
+      formData.append('thumbnail', courseImage);
+    }
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/courses/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      const createdCourse = response.data;
+      setCourseId(createdCourse.id);
+      setLesson((prev) => ({ ...prev, course: createdCourse.id }));
+      setActiveTab('content');
+      fetchLessons(createdCourse.id);
+    } catch (error) {
+      console.error('Error creating course:', error.response ? error.response.data : error.message);
+      alert('There was an error creating the course. Please try again.');
+    }
+  };
+
+  const handleAddLesson = async () => {
+    try {
+      const lessonData = { ...lesson, course: courseId };
+      await axios.post('http://localhost:8000/modules/', lessonData);
+      setLesson({ title: '', description: '', video_url: '', course: courseId });
+      fetchLessons(courseId); // Refresh lesson list after adding
+    } catch (error) {
+      console.error('Error adding lesson:', error.response ? error.response.data : error.message);
+      alert('There was an error adding the lesson. Please try again.');
+    }
   };
 
   return (
@@ -36,37 +91,49 @@ const CoursePage = () => {
         <h2>Create New Course</h2>
         <div className="d-flex gap-2">
           <Button variant="outline-secondary">Preview</Button>
-          <Button variant="primary">Save Course</Button>
+          <Button variant="primary" onClick={handleNextClick}>Save Course</Button>
         </div>
       </div>
 
-      <Tabs defaultActiveKey="details" className="mb-3">
-        {/* Tabs */}
+      <Tabs activeKey={activeTab} onSelect={setActiveTab} className="mb-3">
         <Tab eventKey="details" title="Course Details">
           <Card className="p-4">
             <h4>Basic Information</h4>
             <Form>
               <Form.Group className="mb-3">
                 <Form.Label>Course Title</Form.Label>
-                <Form.Control placeholder="e.g. Introduction to Machine Learning" />
+                <Form.Control
+                  value={courseData.title}
+                  onChange={(e) => setCourseData({ ...courseData, title: e.target.value })}
+                  placeholder="e.g. Introduction to Machine Learning"
+                />
               </Form.Group>
 
               <Form.Group className="mb-3">
                 <Form.Label>Course Description</Form.Label>
-                <Form.Control as="textarea" rows={4} placeholder="Provide a detailed description of your course" />
+                <Form.Control
+                  as="textarea"
+                  rows={4}
+                  value={courseData.description}
+                  onChange={(e) => setCourseData({ ...courseData, description: e.target.value })}
+                  placeholder="Provide a detailed description of your course"
+                />
               </Form.Group>
 
               <Row>
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Category</Form.Label>
-                    <Form.Select>
-                      <option>Select category</option>
-                      <option>Data Science</option>
-                      <option>Programming</option>
-                      <option>Computer Science</option>
-                      <option>Web Development</option>
-                      <option>Artificial Intelligence</option>
+                    <Form.Select
+                      value={courseData.category}
+                      onChange={(e) => setCourseData({ ...courseData, category: e.target.value })}
+                    >
+                      <option value="">Select Category</option>
+                      <option value="programming">Programming</option>
+                      <option value="data_science">Data Science</option>
+                      <option value="web_development">Web Development</option>
+                      <option value="ai_ml">AI & Machine Learning</option>
+                      <option value="cloud_computing">Cloud Computing</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
@@ -74,22 +141,24 @@ const CoursePage = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Difficulty Level</Form.Label>
-                    <Form.Select>
-                      <option>Select level</option>
-                      <option>Beginner</option>
-                      <option>Intermediate</option>
-                      <option>Advanced</option>
+                    <Form.Select
+                      value={courseData.difficulty_level}
+                      onChange={(e) => setCourseData({ ...courseData, difficulty_level: e.target.value })}
+                    >
+                      <option value="">Select Level</option>
+                      <option value="beginner">Beginner</option>
+                      <option value="intermediate">Intermediate</option>
+                      <option value="advanced">Advanced</option>
                     </Form.Select>
                   </Form.Group>
                 </Col>
               </Row>
 
-              {/* Course Thumbnail */}
               <Form.Group className="mb-3">
                 <Form.Label>Course Thumbnail</Form.Label>
                 <div className="upload-thumbnail mb-2">
                   {courseImage ? (
-                    <img src={courseImage} alt="Thumbnail" className="thumbnail-img" />
+                    <img src={URL.createObjectURL(courseImage)} alt="Thumbnail" className="thumbnail-img" />
                   ) : (
                     <div className="thumbnail-placeholder">No Image Selected</div>
                   )}
@@ -97,76 +166,65 @@ const CoursePage = () => {
                 <Form.Control type="file" accept="image/*" onChange={handleImageUpload} />
               </Form.Group>
             </Form>
+
+            <Button variant="primary" onClick={handleNextClick}>Next</Button>
           </Card>
         </Tab>
 
-        <Tab eventKey="content" title="Content">
+        <Tab eventKey="content" title="Content" disabled={!courseId}>
           <Card className="p-4">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-              <h4>Course Lessons</h4>
-              <Button variant="success" onClick={addLesson}>+ Add Lesson</Button>
-            </div>
-
-            {lessons.map((lesson, index) => (
-              <Card className="mb-3 p-3" key={lesson.id}>
-                <Row className="align-items-center">
-                  <Col md={8}>
-                    <Form.Control
-                      value={lesson.title}
-                      onChange={(e) => {
-                        const updatedLessons = [...lessons];
-                        updatedLessons[index].title = e.target.value;
-                        setLessons(updatedLessons);
-                      }}
-                    />
-                  </Col>
-                  <Col md={3}>
-                    <Form.Select
-                      value={lesson.type}
-                      onChange={(e) => {
-                        const updatedLessons = [...lessons];
-                        updatedLessons[index].type = e.target.value;
-                        setLessons(updatedLessons);
-                      }}
-                    >
-                      <option value="video">Video</option>
-                      <option value="text">Text</option>
-                      <option value="quiz">Quiz</option>
-                      <option value="assignment">Assignment</option>
-                    </Form.Select>
-                  </Col>
-                  <Col md={1}>
-                    <Button variant="danger" size="sm" onClick={() => removeLesson(lesson.id)}>🗑️</Button>
-                  </Col>
-                </Row>
-              </Card>
-            ))}
-          </Card>
-        </Tab>
-
-        <Tab eventKey="settings" title="Settings">
-          <Card className="p-4">
-            <h4>Course Settings</h4>
+            <h4>Add Lesson</h4>
             <Form>
-              <Form.Check type="switch" label="Course Status (Publish)" className="mb-3" />
-              <Form.Check type="switch" label="Open Enrollment" className="mb-3" defaultChecked />
-              <Form.Check type="switch" label="Enable Certificates" className="mb-3" defaultChecked />
+              <Row className="align-items-center mb-3">
+                <Col md={6}>
+                  <Form.Control
+                    placeholder="Lesson Title"
+                    value={lesson.title}
+                    onChange={(e) => setLesson({ ...lesson, title: e.target.value })}
+                    required
+                  />
+                </Col>
+                <Col md={6}>
+                  <Form.Control
+                    placeholder="Video URL"
+                    value={lesson.video_url}
+                    onChange={(e) => setLesson({ ...lesson, video_url: e.target.value })}
+                    required
+                  />
+                </Col>
+              </Row>
 
               <Form.Group className="mb-3">
-                <Form.Label>Prerequisites</Form.Label>
-                <Form.Control as="textarea" rows={3} placeholder="Enter course prerequisites" />
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  placeholder="Lesson Content"
+                  value={lesson.description}
+                  onChange={(e) => setLesson({ ...lesson, description: e.target.value })}
+                  required
+                />
               </Form.Group>
 
-              <Form.Group>
-                <Form.Label>Learning Outcomes</Form.Label>
-                <Form.Control as="textarea" rows={3} placeholder="What will students learn?" />
-              </Form.Group>
-
-              <div className="d-flex justify-content-end gap-2 mt-3">
-                <Button variant="outline-secondary">Cancel</Button>
-                <Button variant="primary">Save Settings</Button>
-              </div>
+              <Button variant="success" onClick={handleAddLesson}>Add Lesson</Button>
             </Form>
+
+            {/* Display Lessons List */}
+            <hr />
+            <h5 className="mt-4">Lessons</h5>
+            {lessons.length === 0 ? (
+              <p className="text-muted">No lessons added yet.</p>
+            ) : (
+              <ul className="list-group mt-3">
+                {lessons.map((item, index) => (
+                  <li key={item.id} className="list-group-item">
+                    <strong>{index + 1}. {item.title}</strong>
+                    <br />
+                    <span>{item.description}</span><br />
+                    <small className="text-primary">{item.video_url}</small>
+                  </li>
+                ))}
+              </ul>
+            )}
           </Card>
         </Tab>
       </Tabs>
@@ -174,4 +232,4 @@ const CoursePage = () => {
   );
 };
 
-export default CoursePage;
+export default NewCourse;
