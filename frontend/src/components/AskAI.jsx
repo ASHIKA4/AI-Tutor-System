@@ -1,4 +1,4 @@
-    import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Row,
@@ -9,8 +9,9 @@ import {
   Button,
   Form,
   InputGroup,
+  Alert,
 } from 'react-bootstrap';
-import { Send, Image, Paperclip, Cpu, MessageCircle } from 'react-feather';
+import { Send, Image, Paperclip, Cpu } from 'react-feather';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import '../styles/AskAI.css';
@@ -19,9 +20,8 @@ export default function AskAI() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([
     {
-      role: 'ai',
-      content:
-        "Hello! I'm your AI tutor. Ask me any questions about your courses or learning materials.",
+      role: 'assistant',
+      content: "Hello! I'm your AI tutor. Ask me any questions about your courses or learning materials.",
     },
   ]);
   const [history, setHistory] = useState([
@@ -30,6 +30,8 @@ export default function AskAI() {
     { id: 3, question: 'Help me understand Big O notation', date: 'Apr  5, 2025' },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const apiKey = "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";
   const chatEndRef = useRef(null);
   
   useEffect(() => {
@@ -44,7 +46,11 @@ export default function AskAI() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
-  
+    if (!apiKey) {
+      setError('Please enter your OpenAI API key in the settings');
+      return;
+    }
+
     const question = input.trim();
     const userMessage = { role: 'user', content: question };
   
@@ -55,44 +61,63 @@ export default function AskAI() {
     ]);
     setInput('');
     setIsLoading(true);
+    setError(null);
   
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/chat/', {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // 'Authorization': 'Token YOUR_TOKEN_HERE', // Uncomment if needed
+          'Authorization': `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({ message: question }),
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [...messages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          })), 
+          userMessage],
+          temperature: 0.7,
+          max_tokens: 1000,
+        }),
       });
   
       const data = await response.json();
   
       if (response.ok) {
-        const aiMessage = { role: 'ai', content: data.response };
+        const aiMessage = { 
+          role: 'assistant', 
+          content: data.choices[0].message.content 
+        };
         setMessages((prev) => [...prev, aiMessage]);
       } else {
-        setMessages((prev) => [
-          ...prev,
-          { role: 'ai', content: data.detail || 'Something went wrong.' },
-        ]);
+        throw new Error(data.error?.message || 'Failed to get response from AI');
       }
     } catch (error) {
+      setError(error.message);
       setMessages((prev) => [
         ...prev,
-        { role: 'ai', content: 'Network error. Please try again.' },
+        { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' },
       ]);
+    } finally {
+      setIsLoading(false);
     }
-  
-    setIsLoading(false);
   };
-  
+
+  const handleApiKeySave = () => {
+    localStorage.setItem('openai_api_key', apiKey);
+    setError('API key saved successfully!');
+    setTimeout(() => setError(null), 3000);
+  };
 
   return (
     <Container fluid className="askai-container py-4">
       <h1 className="mb-4 text-center" data-aos="fade-down">
         AI Doubt Solver
       </h1>
+
+      {/* API Key Input - Only show if not already set */}
+      
 
       <Row>
         {/* Chat Column */}
@@ -102,8 +127,7 @@ export default function AskAI() {
               {messages.map((msg, i) => (
                 <div
                   key={i}
-                  className={`d-flex mb-3 ${msg.role === 'user' ? 'justify-content-end' : 'justify-content-start'
-                    }`}
+                  className={`d-flex mb-3 ${msg.role === 'user' ? 'justify-content-end' : 'justify-content-start'}`}
                 >
                   <div className={`chat-bubble ${msg.role}`}>
                     <span>{msg.content}</span>
@@ -112,7 +136,7 @@ export default function AskAI() {
               ))}
               {isLoading && (
                 <div className="d-flex mb-3 justify-content-start">
-                  <div className="chat-bubble ai typing-indicator">
+                  <div className="chat-bubble assistant typing-indicator">
                     <span />
                     <span />
                     <span />
@@ -123,6 +147,7 @@ export default function AskAI() {
             </Card.Body>
 
             <Card.Footer className="py-3">
+              {error && <Alert variant="danger" className="mb-3 py-2">{error}</Alert>}
               <Form onSubmit={handleSubmit}>
                 <InputGroup>
                   <Button variant="outline-secondary">
@@ -135,12 +160,12 @@ export default function AskAI() {
                     placeholder="Ask anything about your courses..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    disabled={isLoading}
+                    disabled={isLoading || !apiKey}
                   />
                   <Button
                     type="submit"
                     variant="primary"
-                    disabled={!input.trim() || isLoading}
+                    disabled={!input.trim() || isLoading || !apiKey}
                   >
                     <Send size={16} />
                   </Button>
@@ -175,9 +200,7 @@ export default function AskAI() {
                   <Button
                     variant="outline-secondary"
                     onClick={() =>
-                      setInput(
-                        'Explain the difference between supervised and unsupervised learning'
-                      )
+                      setInput('Explain the difference between supervised and unsupervised learning')
                     }
                   >
                     <Cpu size={16} className="me-2" />
@@ -207,6 +230,7 @@ export default function AskAI() {
                 </Card.Body>
               </Card>
             </Tab>
+            
           </Tabs>
         </Col>
       </Row>

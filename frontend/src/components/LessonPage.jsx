@@ -1,45 +1,97 @@
-
-import { useState } from "react"
-import { useParams, Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useParams, Link, useLocation } from "react-router-dom"
 import { Button, Card, ProgressBar, Nav, Tab } from "react-bootstrap"
-import { ChevronLeft, ChevronRight, CheckCircle, BookOpen, FileText, Video, MessageSquare } from "lucide-react"
-import '../styles/LessonPage.css'
-import { useLocation } from 'react-router-dom'
-
-
+import {
+  ChevronLeft, ChevronRight, CheckCircle, FileText, Video, MessageSquare
+} from "lucide-react"
+import axios from "axios"
+import "../styles/LessonPage.css"
 
 export default function LessonPage() {
-    const params = useParams()
-    const location = useLocation()
-    const courseFromState = location.state?.course
-    const [completed, setCompleted] = useState(false)
-  
-    const course = {
-      id: Number.parseInt(params.courseId),
-      title: "Introduction to Machine Learning",
-      progress: 65,
-      totalLessons: 12,
+  const params = useParams()
+  const location = useLocation()
+  const course = location.state?.course
+  const [completed, setCompleted] = useState(false)
+  const [modules, setModules] = useState([])
+  const [selectedModule, setSelectedModule] = useState(null)
+  const [activeTab, setActiveTab] = useState("content")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [unlockedModules, setUnlockedModules] = useState([0])
+
+  const courseId = course.course_id
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        setLoading(true)
+        const response = await axios.get(`http://127.0.0.1:8000/modules/?course=${courseId}`)
+        const datas = response.data
+        setModules(datas)
+        if (datas.length > 0 && !selectedModule) {
+          setSelectedModule(datas[0])
+        }
+      } catch (error) {
+        console.error("Error fetching modules:", error)
+        setError("Failed to load course modules")
+      } finally {
+        setLoading(false)
+      }
     }
-  
+
+    if (courseId) {
+      fetchModules()
+    }
+  }, [courseId])
+
+  useEffect(() => {
+    const handleVideoEnd = (event) => {
+      try {
+        const data = JSON.parse(event.data)
+        if (data.event === "onStateChange" && data.info === 0) {
+          const currentIndex = modules.findIndex(mod => mod.id === selectedModule?.id)
+          if (currentIndex !== -1 && currentIndex + 1 < modules.length) {
+            setUnlockedModules((prev) =>
+              prev.includes(currentIndex + 1) ? prev : [...prev, currentIndex + 1]
+            )
+          }
+        }
+      } catch (e) {
+        // Ignore non-JSON messages
+      }
+    }
+
+    window.addEventListener("message", handleVideoEnd)
+    return () => window.removeEventListener("message", handleVideoEnd)
+  }, [selectedModule, modules])
+
+  const handleModuleClick = (module) => {
+    setSelectedModule(module)
+    setActiveTab(module.video_url ? "video" : "content")
+  }
+
+  const getYouTubeId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
+    const match = url.match(regExp)
+    return (match && match[2].length === 11) ? match[2] : null
+  }
+
   const lesson = {
     id: Number.parseInt(params.lessonId),
-    title: "Supervised Learning Algorithms",
+    title: course.title,
     description: "Learn about the most common supervised learning algorithms and their applications.",
-    content: `
-      <h2>Supervised Learning Algorithms</h2>
-      <p>Supervised learning is a type of machine learning where the algorithm learns from labeled training data...</p>
-      <h3>Common Supervised Learning Algorithms</h3>
-      <ul>
-        <li><strong>Linear Regression</strong>: Used for predicting a continuous value.</li>
-        <li><strong>Logistic Regression</strong>: Used for binary classification problems.</li>
-      </ul>
-    `,
-    videoUrl: "https://example.com/video.mp4",
-    resources: [
-      { title: "Supervised Learning Cheat Sheet", type: "pdf", url: "#" },
-      { title: "Linear Regression Example", type: "notebook", url: "#" },
-      { title: "Decision Trees Visualization", type: "interactive", url: "#" },
-    ],
+    content: selectedModule ? `
+      <div class="module-content">
+        <h2>${selectedModule.title}</h2>
+        <p class="module-description">${selectedModule.description}</p>
+      </div>
+    ` : `
+      <div class="welcome-content">
+        <h1>${course.course_title}</h1>
+        <h4>${course.description}</h4>
+        <p>Select a module from the resources section to begin learning.</p>
+      </div>
+    `
   }
 
   const nextLessonId = lesson.id + 1
@@ -47,6 +99,14 @@ export default function LessonPage() {
 
   const handleMarkComplete = () => {
     setCompleted(true)
+  }
+
+  if (loading) {
+    return <div className="container my-4 text-center">Loading...</div>
+  }
+
+  if (error) {
+    return <div className="container my-4 text-center text-danger">{error}</div>
   }
 
   return (
@@ -76,24 +136,28 @@ export default function LessonPage() {
         </div>
       </div>
 
-     <ProgressBar
-  now={course.progress}label={`${course.progress}%`}style={{ height: '20px', borderRadius: '10px' }}/>
-
+      <ProgressBar
+        now={course.progress}
+        label={`${course.progress}%`}
+        style={{ height: '20px', borderRadius: '10px' }}
+      />
 
       <div className="row">
         <div className="col-lg-8">
-          <Tab.Container defaultActiveKey="content">
+          <Tab.Container activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
             <Nav variant="tabs">
               <Nav.Item>
                 <Nav.Link eventKey="content">
                   <FileText size={16} className="me-1" /> Content
                 </Nav.Link>
               </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="video">
-                  <Video size={16} className="me-1" /> Video
-                </Nav.Link>
-              </Nav.Item>
+              {selectedModule?.video_url && (
+                <Nav.Item>
+                  <Nav.Link eventKey="video">
+                    <Video size={16} className="me-1" /> Video
+                  </Nav.Link>
+                </Nav.Item>
+              )}
               <Nav.Item>
                 <Nav.Link eventKey="discussion">
                   <MessageSquare size={16} className="me-1" /> Discussion
@@ -108,14 +172,26 @@ export default function LessonPage() {
                   </Card.Body>
                 </Card>
               </Tab.Pane>
-              <Tab.Pane eventKey="video">
-                <Card>
-                  <Card.Body className="d-flex justify-content-center align-items-center aspect-ratio-box">
-                    <Video size={40} className="text-muted me-2" />
-                    <span>Video player would be here</span>
-                  </Card.Body>
-                </Card>
-              </Tab.Pane>
+              {selectedModule?.video_url && (
+                <Tab.Pane eventKey="video">
+                  <Card>
+                    <Card.Body className="d-flex justify-content-center align-items-center">
+                      <div className="video-container w-100">
+                        <iframe
+                          width="100%"
+                          height="480"
+                          id="youtube-player"
+                          src={`https://www.youtube.com/embed/${getYouTubeId(selectedModule.video_url)}?enablejsapi=1&origin=${window.location.origin}`}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          title="YouTube video player"
+                        ></iframe>
+                      </div>
+                    </Card.Body>
+                  </Card>
+                </Tab.Pane>
+              )}
               <Tab.Pane eventKey="discussion">
                 <Card>
                   <Card.Body className="text-center py-5">
@@ -149,21 +225,38 @@ export default function LessonPage() {
           <Card className="mb-4">
             <Card.Header>Resources</Card.Header>
             <Card.Body>
-              {lesson.resources.map((res, i) => (
-                <div key={i}>
-                  <a href={res.url} className="d-flex align-items-center py-2 text-decoration-none text-dark hover-link">
-                    {res.type === "pdf" ? (
-                      <FileText size={16} className="me-2" />
-                    ) : res.type === "notebook" ? (
-                      <BookOpen size={16} className="me-2" />
-                    ) : (
-                      <Video size={16} className="me-2" />
-                    )}
-                    {res.title}
-                  </a>
-                  {i < lesson.resources.length - 1 && <hr className="my-2" />}
-                </div>
-              ))}
+              {modules.length > 0 ? (
+                modules.map((module, i) => {
+                  const isUnlocked = unlockedModules.includes(i)
+                  const isSelected = selectedModule?.id === module.id
+
+                  return (
+                    <div key={module.id}>
+                      <a
+                        href="#"
+                        className={`d-flex align-items-center py-2 text-decoration-none ${
+                          isSelected ? 'text-primary fw-bold' : isUnlocked ? 'text-dark' : 'text-muted'
+                        } ${!isUnlocked ? 'disabled' : 'hover-link'}`}
+                        onClick={(e) => {
+                          e.preventDefault()
+                          if (isUnlocked) handleModuleClick(module)
+                        }}
+                      >
+                        {module.video_url ? (
+                          <Video size={16} className="me-2" />
+                        ) : (
+                          <FileText size={16} className="me-2" />
+                        )}
+                        {module.title}
+                        {!isUnlocked && <span className="ms-auto badge bg-secondary">Locked</span>}
+                      </a>
+                      {i < modules.length - 1 && <hr className="my-2" />}
+                    </div>
+                  )
+                })
+              ) : (
+                <p className="text-muted">No resources available</p>
+              )}
             </Card.Body>
           </Card>
 

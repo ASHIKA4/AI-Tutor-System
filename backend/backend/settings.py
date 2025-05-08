@@ -11,11 +11,19 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import os
+
+# Load the environment variables from the .env file
+load_dotenv()
+
+# Now, access the environment variable as follows
+OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -42,7 +50,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'myapp',
-    
+    'rest_framework_simplejwt',
 ]
 
 
@@ -130,6 +138,7 @@ DATABASES = {
 }
 
 
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -183,3 +192,6 @@ SOCIALACCOUNT_PROVIDERS = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+OPENROUTER_API_KEY="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"
+
+OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')

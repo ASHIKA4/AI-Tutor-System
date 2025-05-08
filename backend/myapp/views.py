@@ -73,14 +73,30 @@ def login_view(request):
 
 
 
-
 from rest_framework import generics
 from .models import Enrollment
 from .serializers import EnrollmentSerializer
 
-class EnrollmentCreateView(generics.CreateAPIView):
-    queryset = Enrollment.objects.all()
+# views.py
+
+class EnrollmentListCreateView(generics.ListCreateAPIView):
     serializer_class = EnrollmentSerializer
+
+    def get_queryset(self):
+        queryset = Enrollment.objects.select_related('course').all()
+        student_id = self.request.query_params.get('student')
+        course_id = self.request.query_params.get('course')
+        
+        if student_id:
+            queryset = queryset.filter(student_id=student_id)
+        if course_id:
+            queryset = queryset.filter(course_id=course_id)
+            
+        return queryset
+
+
+
+
 
 
 from rest_framework import viewsets
@@ -88,8 +104,18 @@ from .models import Course, Module
 from .serializers import CourseSerializer, ModuleSerializer
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
     serializer_class = CourseSerializer
+
+    def get_queryset(self):
+        queryset = Course.objects.all()
+        teacher_id = self.request.query_params.get('teacher')
+
+        if teacher_id:
+            queryset = queryset.filter(teacher__id=teacher_id)
+
+        return queryset
+
+
 
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Module
@@ -102,3 +128,31 @@ class ModuleViewSet(viewsets.ModelViewSet):
     filterset_fields = ['course']  # This enables ?course=<id> filtering
 
 
+from rest_framework.exceptions import NotFound
+from rest_framework import viewsets, permissions
+from .models import Course, register, Quiz  # Make sure these are imported
+from .serializers import QuizSerializer
+
+class QuizViewSet(viewsets.ModelViewSet):
+    serializer_class = QuizSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        queryset = Quiz.objects.all()
+        teacher_id = self.request.query_params.get('teacher')
+        course_id = self.request.query_params.get('course')
+
+        if teacher_id:
+            if not register.objects.filter(id=teacher_id).exists():
+                raise NotFound(detail=f"Teacher with id {teacher_id} not found.")
+            queryset = queryset.filter(teacher__id=teacher_id)
+
+        if course_id:
+            if not Course.objects.filter(id=course_id).exists():
+                raise NotFound(detail=f"Course with id {course_id} not found.")
+            queryset = queryset.filter(course__id=course_id)
+
+        return queryset
+
+    def perform_create(self, serializer):
+        serializer.save()

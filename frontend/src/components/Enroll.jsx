@@ -57,6 +57,7 @@ const Enroll = () => {
       // Get student ID from localStorage or wherever you store user data
       const studentId = localStorage.getItem('studentId'); // Adjust this based on your auth system
       
+      
       const enrollmentData = {
         full_name: formData.fullName,
         email: formData.email,
@@ -87,7 +88,7 @@ const Enroll = () => {
       
       setSuccess(true);
       setTimeout(() => {
-        navigate('/courses');
+        navigate('/student/my-courses');
       }, 2000);
     } catch (err) {
       setApiError(err.message || 'An error occurred during enrollment');

@@ -23,6 +23,7 @@ const CourseCatalog = () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/courses/');
         setCourses(response.data);
+        console.log(response)
       } catch (err) {
         setError(err.message || 'Something went wrong');
       } finally {
@@ -181,14 +182,15 @@ const CourseCatalog = () => {
                         {getDisplayLevel(course.difficulty_level)}
                       </span>
                       {/* Duration not available in API, you might want to add it */}
-                      <span className="badge bg-secondary text-light">N/A weeks</span>
+                      <span className="badge bg-secondary text-light">8 weeks</span>
                     </div>
                     <Card.Title>{course.title}</Card.Title>
                     <Card.Text>{course.description}</Card.Text>
                     {/* Instructor ID available but not name - you might want to fetch teacher details */}
                     <p className="instructor">
-                      <strong>Instructor:</strong> Teacher #{course.teacher}
-                    </p>
+  <strong>Instructor:</strong> {course.teacher?.username}
+</p>
+
                   </div>
 
                   {/* Push button to bottom */}
@@ -197,7 +199,7 @@ const CourseCatalog = () => {
                       <button
                         className="btn btn-success w-100"
                         onClick={() =>
-                          navigate(`/home/student/course/${course.id}/lesson/1`, { state: { course } })} // navigate to the lesson page
+                          navigate(`student/course/${course.id}/lesson/${lesson.id}`, { state: { course } })} // navigate to the lesson page
                       >
                         Continue Learning
                       </button>

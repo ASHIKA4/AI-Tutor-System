@@ -5,21 +5,22 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import (
 
-     EnrollmentCreateView,
+     EnrollmentListCreateView,
     login_view,
     register_view,
     
    
     RegisterViewSet,
-    CourseViewSet, ModuleViewSet
+    CourseViewSet, ModuleViewSet, QuizViewSet
   
    
 )
 
 router = DefaultRouter()
 
-router.register(r'courses', CourseViewSet)
-router.register(r'modules', ModuleViewSet)
+router.register(r'courses', CourseViewSet, basename='course') 
+router.register(r'modules', ModuleViewSet, basename='module')
+router.register(r'quizzes', QuizViewSet, basename='quiz')
 
 
 urlpatterns = [
@@ -28,8 +29,8 @@ urlpatterns = [
     path('login/', login_view, name='login'),
    
     path('', include(router.urls)),  
-    path('enroll/', EnrollmentCreateView.as_view(), name='enroll-course'),
     
+    path('enroll/', EnrollmentListCreateView.as_view(), name='enroll-list-create'),
 ]
 
 if settings.DEBUG:
