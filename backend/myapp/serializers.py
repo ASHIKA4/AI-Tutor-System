@@ -24,11 +24,13 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = register
         fields = ['id', 'username', 'email', 'role']
 
+
 # Generic register serializer (includes all fields)
 class registerSerializer(serializers.ModelSerializer):
     class Meta:
         model = register
         fields = '__all__'
+
 
 # Login Serializer
 class loginSerializer(serializers.ModelSerializer):
@@ -36,35 +38,38 @@ class loginSerializer(serializers.ModelSerializer):
         model = login
         fields = '__all__'
 
-# Module Serializer
-# class ModuleSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Module
-#         fields = ['id', 'module_name', 'module_description', 'video_url']
 
 
-# Course Serializer with nested modules
-# class CourseSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Course
-#         fields = ['id', 'title', 'description', 'category', 'difficulty_level', 'thumbnail', 'teacher']
 
+# serializers.py
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from .models import Course
-from .models import register  # Replace with your actual model path
+
+User = get_user_model()
 
 class TeacherSerializer(serializers.ModelSerializer):
     class Meta:
-        model = register
-        fields = ['id', 'username', 'email']  # Add other fields you want to expose
+        model = register  # Assuming your Register model is used for both students & teachers
+        fields = ['id', 'username', 'email']  # Add other relevant fields
+
 
 class CourseSerializer(serializers.ModelSerializer):
-    teacher = TeacherSerializer(read_only=True)
+    teacher_detail = TeacherSerializer(source='teacher', read_only=True)  # For display
+    teacher = serializers.PrimaryKeyRelatedField(queryset=register.objects.all())  # For form submission
 
     class Meta:
         model = Course
-        fields = ['id', 'title', 'description', 'category', 'difficulty_level', 'thumbnail', 'teacher']
+        fields = '__all__'
 
+
+# from rest_framework import serializers
+# from .models import Enrollment, Course
+
+# class CourseSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Course
+#         fields = '__all__'
 
 from rest_framework import serializers
 from .models import Course, Module
@@ -77,15 +82,24 @@ class ModuleSerializer(serializers.ModelSerializer):
 
 
 
+
+
 class EnrollmentSerializer(serializers.ModelSerializer):
     course = CourseSerializer(read_only=True)
     course_id = serializers.PrimaryKeyRelatedField(
-    queryset=Course.objects.all(), source='course', write_only=True
+        queryset=Course.objects.all(), source='course', write_only=True
     )
+
+    module_status = serializers.ListField(
+        child=serializers.CharField(), required=False
+    )
+
+    quiz_status = serializers.IntegerField(required=False)
 
     class Meta:
         model = Enrollment
-        fields ='__all__'
+        fields = '__all__'
+
 
 
 from rest_framework import serializers

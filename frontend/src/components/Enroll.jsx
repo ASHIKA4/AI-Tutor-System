@@ -62,9 +62,12 @@ const Enroll = () => {
         full_name: formData.fullName,
         email: formData.email,
         mobile: formData.mobile,
-        course: course.id,
+        course_id: course.id,
         teacher: course.teacher,
-        student: studentId || 1 // Fallback to 1 if no student ID, adjust as needed
+        student: studentId || 1 ,
+        module_status: [],
+        progress: 0 ,
+        quiz_status: 0// Fallback to 1 if no student ID, adjust as needed
       };
 
       const response = await fetch('http://127.0.0.1:8000/enroll/', {
@@ -72,7 +75,7 @@ const Enroll = () => {
         headers: {
           'Content-Type': 'application/json',
           // Add authorization header if needed
-          // 'Authorization': `Token ${localStorage.getItem('token')}`
+          // 'Authorization': Token ${localStorage.getItem('token')}
         },
         body: JSON.stringify(enrollmentData)
       });
@@ -120,10 +123,10 @@ const Enroll = () => {
 
             <h3 className="fw-bold text-primary mb-3">{course.title}</h3>
             <ul className="list-unstyled">
-              <li><strong>Instructor:</strong> Teacher #{course.teacher}</li>
+            <li><p><strong>Instructor:</strong> {course.teacher_detail?.username}</p></li>
               <li><strong>Level:</strong> {course.difficulty_level}</li>
               {/* Duration not available in API - you might want to add it */}
-              <li><strong>Duration:</strong> N/A weeks</li>
+              <li><strong>Duration:</strong> 8 weeks</li>
             </ul>
             <p className="text-muted mt-3">{course.description}</p>
           </Col>

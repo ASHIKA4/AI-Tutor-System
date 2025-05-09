@@ -17,7 +17,6 @@ export default function LessonPage() {
   const [activeTab, setActiveTab] = useState("content")
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [unlockedModules, setUnlockedModules] = useState([0])
 
   const courseId = course.course_id
 
@@ -43,27 +42,6 @@ export default function LessonPage() {
       fetchModules()
     }
   }, [courseId])
-
-  useEffect(() => {
-    const handleVideoEnd = (event) => {
-      try {
-        const data = JSON.parse(event.data)
-        if (data.event === "onStateChange" && data.info === 0) {
-          const currentIndex = modules.findIndex(mod => mod.id === selectedModule?.id)
-          if (currentIndex !== -1 && currentIndex + 1 < modules.length) {
-            setUnlockedModules((prev) =>
-              prev.includes(currentIndex + 1) ? prev : [...prev, currentIndex + 1]
-            )
-          }
-        }
-      } catch (e) {
-        // Ignore non-JSON messages
-      }
-    }
-
-    window.addEventListener("message", handleVideoEnd)
-    return () => window.removeEventListener("message", handleVideoEnd)
-  }, [selectedModule, modules])
 
   const handleModuleClick = (module) => {
     setSelectedModule(module)
@@ -226,8 +204,7 @@ export default function LessonPage() {
             <Card.Header>Resources</Card.Header>
             <Card.Body>
               {modules.length > 0 ? (
-                modules.map((module, i) => {
-                  const isUnlocked = unlockedModules.includes(i)
+                modules.map((module) => {
                   const isSelected = selectedModule?.id === module.id
 
                   return (
@@ -235,11 +212,11 @@ export default function LessonPage() {
                       <a
                         href="#"
                         className={`d-flex align-items-center py-2 text-decoration-none ${
-                          isSelected ? 'text-primary fw-bold' : isUnlocked ? 'text-dark' : 'text-muted'
-                        } ${!isUnlocked ? 'disabled' : 'hover-link'}`}
+                          isSelected ? 'text-primary fw-bold' : 'text-dark'
+                        } hover-link`}
                         onClick={(e) => {
                           e.preventDefault()
-                          if (isUnlocked) handleModuleClick(module)
+                          handleModuleClick(module)
                         }}
                       >
                         {module.video_url ? (
@@ -248,9 +225,8 @@ export default function LessonPage() {
                           <FileText size={16} className="me-2" />
                         )}
                         {module.title}
-                        {!isUnlocked && <span className="ms-auto badge bg-secondary">Locked</span>}
                       </a>
-                      {i < modules.length - 1 && <hr className="my-2" />}
+                      <hr className="my-2" />
                     </div>
                   )
                 })

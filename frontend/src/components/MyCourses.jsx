@@ -175,7 +175,7 @@ const MyCourses = () => {
                       className="w-100"
                       onClick={() =>
                         navigate(`/student/course/${course.course_id}/lesson/${course.next_lesson}`, {
-                          state: { course }
+                          state: { course } 
                         })
                       }
                     >

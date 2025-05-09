@@ -6,8 +6,8 @@ from django.db import models
 
 class register(models.Model):  
     username = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)  # ✅ Make email unique
-    password = models.CharField(max_length=128)  # ✅ Keep, but ensure it's hashed before saving
+    email = models.EmailField(unique=True) 
+    password = models.CharField(max_length=128)  
     role = models.CharField(max_length=50, default="student")
 
     def __str__(self):
@@ -94,6 +94,12 @@ class Enrollment(models.Model):
         choices=STATUS_CHOICES,
         default='Not Completed'  # Make sure this matches one of the choices and max_length
     )
+
+    progress = models.IntegerField(default=0)
+
+    module_status = models.JSONField(default=list)  # Available in Django 3.1+ and MySQL 5.7+
+    quiz_status = models.IntegerField(default=0)
+    
 
     course = models.ForeignKey(
         'Course',

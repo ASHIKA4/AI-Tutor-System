@@ -79,6 +79,10 @@ from .serializers import EnrollmentSerializer
 
 # views.py
 
+from rest_framework import generics
+from .models import Enrollment
+from .serializers import EnrollmentSerializer
+
 class EnrollmentListCreateView(generics.ListCreateAPIView):
     serializer_class = EnrollmentSerializer
 
@@ -86,13 +90,19 @@ class EnrollmentListCreateView(generics.ListCreateAPIView):
         queryset = Enrollment.objects.select_related('course').all()
         student_id = self.request.query_params.get('student')
         course_id = self.request.query_params.get('course')
-        
+
         if student_id:
             queryset = queryset.filter(student_id=student_id)
         if course_id:
             queryset = queryset.filter(course_id=course_id)
-            
+
         return queryset
+
+
+# {
+#   "module_status": ["Module 1: Not Completed", "Module 2: In Progress"],
+#   "quiz_status": ["Quiz 1: Pending", "Quiz 2: Pending"]
+# }
 
 
 
@@ -114,6 +124,8 @@ class CourseViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(teacher__id=teacher_id)
 
         return queryset
+
+
 
 
 
@@ -156,3 +168,6 @@ class QuizViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
+
+
+

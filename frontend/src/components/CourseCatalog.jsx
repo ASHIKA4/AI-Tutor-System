@@ -1,29 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; 
 import { Container, Row, Col, Card, Dropdown, Form, InputGroup } from 'react-bootstrap';
 import '../styles/CourseCatalog.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 const CourseCatalog = () => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [enrolled, setEnrolled] = useState([]);
   const [error, setError] = useState(null);
+  const studentId = localStorage.getItem("studentId");
 
-  const enrolledCourses = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
- console.log(courses);
-  // State to manage the filters and search query
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Categories');
   const [selectedLevel, setSelectedLevel] = useState('All Levels');
 
-  // Fetch courses from API
-  
+  const enrolledCourseIds = enrolled.map(enrollment => enrollment.course.id);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const response = await axios.get('http://127.0.0.1:8000/courses/');
         setCourses(response.data);
-        console.log(response)
       } catch (err) {
         setError(err.message || 'Something went wrong');
       } finally {
@@ -34,35 +33,41 @@ const CourseCatalog = () => {
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    const fetchEnrolledCourses = async () => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/enroll/?student=${studentId}`);
+        setEnrolled(response.data);
+      } catch (err) {
+        setError(err.message || 'Something went wrong');
+      }
+    };
 
-  // Handle search input change
+    fetchEnrolledCourses();
+  }, [studentId]);
+
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Handle category selection change
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
 
-  // Handle level selection change
   const handleLevelChange = (level) => {
     setSelectedLevel(level);
   };
 
-  // Map API category values to display names
   const getDisplayCategory = (apiCategory) => {
     const categoryMap = {
       'programming': 'Programming',
       'web_development': 'Web Development',
       'data_science': 'Data Science',
       'ai_ml': 'Artificial Intelligence',
-      // Add other mappings as needed
     };
     return categoryMap[apiCategory] || apiCategory;
   };
 
-  // Map API difficulty levels to display names
   const getDisplayLevel = (apiLevel) => {
     const levelMap = {
       'beginner': 'Beginner',
@@ -72,7 +77,6 @@ const CourseCatalog = () => {
     return levelMap[apiLevel] || apiLevel;
   };
 
-  // Filter courses based on search term, category, and level
   const filteredCourses = courses.filter((course) => {
     const matchesSearchTerm =
       course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -97,16 +101,13 @@ const CourseCatalog = () => {
 
   return (
     <div className="d-flex">
-      {/* Main Content */}
       <div className="content flex-grow-1 p-4">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="fw-bold">Course Catalog</h4>
           <button className="btn btn-outline-secondary">Help</button>
         </div>
 
-        {/* Search & Filters */}
         <div className="d-flex gap-3 mb-4 flex-wrap">
-          {/* Search Field */}
           <InputGroup className="search-box">
             <Form.Control
               type="text"
@@ -116,7 +117,6 @@ const CourseCatalog = () => {
             />
           </InputGroup>
 
-          {/* Categories Dropdown */}
           <Dropdown>
             <Dropdown.Toggle className="border">
               {selectedCategory}
@@ -136,7 +136,6 @@ const CourseCatalog = () => {
             </Dropdown.Menu>
           </Dropdown>
 
-          {/* Levels Dropdown */}
           <Dropdown>
             <Dropdown.Toggle className="border">
               {selectedLevel}
@@ -181,40 +180,35 @@ const CourseCatalog = () => {
                       <span className="badge bg-light text-dark">
                         {getDisplayLevel(course.difficulty_level)}
                       </span>
-                      {/* Duration not available in API, you might want to add it */}
                       <span className="badge bg-secondary text-light">8 weeks</span>
                     </div>
                     <Card.Title>{course.title}</Card.Title>
                     <Card.Text>{course.description}</Card.Text>
-                    {/* Instructor ID available but not name - you might want to fetch teacher details */}
                     <p className="instructor">
-  <strong>Instructor:</strong> {course.teacher?.username}
+  <strong>Instructor:</strong> {course.teacher_detail?.username}
 </p>
 
                   </div>
 
-                  {/* Push button to bottom */}
                   <div className="mt-auto">
-                    {enrolledCourses.includes(course.id) ? (
+                    {enrolledCourseIds.includes(course.id) ? (
                       <button
                         className="btn btn-success w-100"
-                        onClick={() =>
-                          navigate(`student/course/${course.id}/lesson/${lesson.id}`, { state: { course } })} // navigate to the lesson page
+                        onClick={() => navigate(`/student/course/${course.id}`)}
                       >
                         Continue Learning
                       </button>
                     ) : (
                       <button
-                      className="btn btn-primary w-100"
-                      onClick={() =>
-                        navigate(`/student/enroll/${course.id}`, {
-                          state: { course, thumbnail: course.thumbnail },
-                        })
-                      }
-                    >
-                      Enroll Now
-                    </button>
-                    
+                        className="btn btn-primary w-100"
+                        onClick={() =>
+                          navigate(`/student/enroll/${course.id}`, {
+                            state: { course, thumbnail: course.thumbnail },
+                          })
+                        }
+                      >
+                        Enroll Now
+                      </button>
                     )}
                   </div>
                 </Card.Body>
@@ -224,7 +218,7 @@ const CourseCatalog = () => {
         </Row>
       </div>
     </div>
-        );
+  );
 };
 
 export default CourseCatalog;
