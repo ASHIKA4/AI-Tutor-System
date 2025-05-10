@@ -1,58 +1,59 @@
-import { useEffect, useState } from "react"
-import { useParams, Link, useLocation } from "react-router-dom"
-import { Button, Card, ProgressBar, Nav, Tab } from "react-bootstrap"
+import { useEffect, useState } from "react";
+import { useParams, Link, useLocation } from "react-router-dom";
+import { Button, Card, ProgressBar, Nav, Tab } from "react-bootstrap";
 import {
   ChevronLeft, ChevronRight, CheckCircle, FileText, Video, MessageSquare
-} from "lucide-react"
-import axios from "axios"
-import "../styles/LessonPage.css"
+} from "lucide-react";
+import axios from "axios";
+import "../styles/LessonPage.css";
 
 export default function LessonPage() {
-  const params = useParams()
-  const location = useLocation()
-  const course = location.state?.course
-  const [completed, setCompleted] = useState(false)
-  const [modules, setModules] = useState([])
-  const [selectedModule, setSelectedModule] = useState(null)
-  const [activeTab, setActiveTab] = useState("content")
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const params = useParams();
+  const location = useLocation();
+  const course = location.state?.course;
+  const [completed, setCompleted] = useState(false);
+  const [modules, setModules] = useState([]);
+  const [selectedModule, setSelectedModule] = useState(null);
+  const [activeTab, setActiveTab] = useState("content");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [progress, setProgress] = useState(0); // Progress state
 
-  const courseId = course.course_id
+  const courseId = course.course_id;
 
   useEffect(() => {
     const fetchModules = async () => {
       try {
-        setLoading(true)
-        const response = await axios.get(`http://127.0.0.1:8000/modules/?course=${courseId}`)
-        const datas = response.data
-        setModules(datas)
+        setLoading(true);
+        const response = await axios.get(`http://127.0.0.1:8000/modules/?course=${courseId}`);
+        const datas = response.data;
+        setModules(datas);
         if (datas.length > 0 && !selectedModule) {
-          setSelectedModule(datas[0])
+          setSelectedModule(datas[0]);
         }
       } catch (error) {
-        console.error("Error fetching modules:", error)
-        setError("Failed to load course modules")
+        console.error("Error fetching modules:", error);
+        setError("Failed to load course modules");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
     if (courseId) {
-      fetchModules()
+      fetchModules();
     }
-  }, [courseId])
+  }, [courseId]);
 
   const handleModuleClick = (module) => {
-    setSelectedModule(module)
-    setActiveTab(module.video_url ? "video" : "content")
-  }
+    setSelectedModule(module);
+    setActiveTab(module.video_url ? "video" : "content");
+  };
 
   const getYouTubeId = (url) => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/
-    const match = url.match(regExp)
-    return (match && match[2].length === 11) ? match[2] : null
-  }
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
 
   const lesson = {
     id: Number.parseInt(params.lessonId),
@@ -70,22 +71,52 @@ export default function LessonPage() {
         <p>Select a module from the resources section to begin learning.</p>
       </div>
     `
-  }
+  };
 
-  const nextLessonId = lesson.id + 1
-  const prevLessonId = lesson.id - 1
+  const nextLessonId = lesson.id + 1;
+  const prevLessonId = lesson.id - 1;
 
   const handleMarkComplete = () => {
-    setCompleted(true)
-  }
+    setCompleted(true);
+  };
 
   if (loading) {
-    return <div className="container my-4 text-center">Loading...</div>
+    return <div className="container my-4 text-center">Loading...</div>;
   }
 
   if (error) {
-    return <div className="container my-4 text-center text-danger">{error}</div>
+    return <div className="container my-4 text-center text-danger">{error}</div>;
   }
+
+  const updateModuleStatus = async (moduleId) => {
+    try {
+      const studentId = localStorage.getItem('studentId'); // Retrieve the student ID from local storage or session
+      const courseId = course.id; // Assuming you have the course ID in your component
+
+      const response = await fetch('http://127.0.0.1:8000/update-module-status/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          student_id: studentId,
+          course_id: courseId,
+          module_id: moduleId
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Module status updated successfully:', data);
+        // Update the UI with the new progress
+        setProgress(data.progress);
+      } else {
+        throw new Error('Failed to update module status');
+      }
+    } catch (error) {
+      console.error('Error updating module status:', error);
+    }
+  };
 
   return (
     <div className="container my-4">
@@ -115,8 +146,8 @@ export default function LessonPage() {
       </div>
 
       <ProgressBar
-        now={course.progress}
-        label={`${course.progress}%`}
+        now={progress}
+        label={`${progress}%`}
         style={{ height: '20px', borderRadius: '10px' }}
       />
 
@@ -188,14 +219,12 @@ export default function LessonPage() {
           <Card className="mb-4">
             <Card.Header>Lesson Progress</Card.Header>
             <Card.Body>
-              <Button onClick={handleMarkComplete} disabled={completed} className="w-100">
-                {completed ? (
-                  <>
-                    <CheckCircle size={16} className="me-2" /> Completed
-                  </>
-                ) : (
-                  "Mark as Complete"
-                )}
+              <Button
+                variant="success"
+                onClick={() => updateModuleStatus(selectedModule?.id)} // Pass the current module ID
+                disabled={completed}
+              >
+                {completed ? 'Completed' : 'Mark as Completed'}
               </Button>
             </Card.Body>
           </Card>
@@ -205,7 +234,7 @@ export default function LessonPage() {
             <Card.Body>
               {modules.length > 0 ? (
                 modules.map((module) => {
-                  const isSelected = selectedModule?.id === module.id
+                  const isSelected = selectedModule?.id === module.id;
 
                   return (
                     <div key={module.id}>
@@ -215,8 +244,8 @@ export default function LessonPage() {
                           isSelected ? 'text-primary fw-bold' : 'text-dark'
                         } hover-link`}
                         onClick={(e) => {
-                          e.preventDefault()
-                          handleModuleClick(module)
+                          e.preventDefault();
+                          handleModuleClick(module);
                         }}
                       >
                         {module.video_url ? (
@@ -228,7 +257,7 @@ export default function LessonPage() {
                       </a>
                       <hr className="my-2" />
                     </div>
-                  )
+                  );
                 })
               ) : (
                 <p className="text-muted">No resources available</p>
@@ -252,5 +281,5 @@ export default function LessonPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

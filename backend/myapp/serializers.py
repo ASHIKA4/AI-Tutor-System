@@ -93,12 +93,12 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     module_status = serializers.ListField(
         child=serializers.CharField(), required=False
     )
-
     quiz_status = serializers.IntegerField(required=False)
 
     class Meta:
         model = Enrollment
         fields = '__all__'
+
 
 
 

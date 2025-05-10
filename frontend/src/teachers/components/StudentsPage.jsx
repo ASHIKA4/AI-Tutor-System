@@ -42,8 +42,8 @@ const StudentsPage = () => {
   const students = [
     {
       id: 1,
-      name: 'John Smith',
-      email: 'john.smith@example.com',
+      name: 'Nancy',
+      email: 'nancy@gmail.com',
       enrolledCourses: ['Intro to ML', 'Advanced Python'],
       progress: 65,
       lastActive: '2 hours ago',
@@ -52,7 +52,7 @@ const StudentsPage = () => {
     },
     {
       id: 2,
-      name: 'Emily Johnson',
+      name: 'gowsi@gmail.com',
       email: 'emily.johnson@example.com',
       enrolledCourses: ['Intro to ML', 'DSA'],
       progress: 78,
@@ -60,36 +60,7 @@ const StudentsPage = () => {
       status: 'active',
       image: '/placeholder.svg',
     },
-    {
-      id: 3,
-      name: 'Michael Brown',
-      email: 'michael.brown@example.com',
-      enrolledCourses: ['Advanced Python'],
-      progress: 42,
-      lastActive: '3 days ago',
-      status: 'at-risk',
-      image: '/placeholder.svg',
-    },
-    {
-      id: 4,
-      name: 'Sarah Davis',
-      email: 'sarah.davis@example.com',
-      enrolledCourses: ['DSA'],
-      progress: 91,
-      lastActive: '1 day ago',
-      status: 'active',
-      image: '/placeholder.svg',
-    },
-    {
-      id: 5,
-      name: 'Alex Wilson',
-      email: 'alex.wilson@example.com',
-      enrolledCourses: ['Intro to ML'],
-      progress: 23,
-      lastActive: '1 week ago',
-      status: 'inactive',
-      image: '/placeholder.svg',
-    },
+  
   ];
 
   const allCourses = Array.from(new Set(students.flatMap(s => s.enrolledCourses)));

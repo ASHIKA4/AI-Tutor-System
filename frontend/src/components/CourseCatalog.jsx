@@ -184,7 +184,7 @@ const CourseCatalog = () => {
                     </div>
                     <Card.Title>{course.title}</Card.Title>
                     <Card.Text>{course.description}</Card.Text>
-                    <p className="instructor">
+                   <p className="instructor">
   <strong>Instructor:</strong> {course.teacher_detail?.username}
 </p>
 
@@ -194,9 +194,9 @@ const CourseCatalog = () => {
                     {enrolledCourseIds.includes(course.id) ? (
                       <button
                         className="btn btn-success w-100"
-                        onClick={() => navigate(`/student/course/${course.id}`)}
+                        
                       >
-                        Continue Learning
+                        Already Enrolled
                       </button>
                     ) : (
                       <button

@@ -1,9 +1,5 @@
 from django.db import models
 
-from django.db import models
-
-
-
 class register(models.Model):  
     username = models.CharField(max_length=100)
     email = models.EmailField(unique=True) 
@@ -12,11 +8,7 @@ class register(models.Model):
 
     def __str__(self):
         return self.username  
-    
-
-
-
-    
+       
 class login(models.Model):  
     email = models.CharField(max_length=100)
     password = models.CharField(max_length=128)  
@@ -25,8 +17,6 @@ class login(models.Model):
         return self.name
 
     
-
-from django.db import models
 from django.core.validators import FileExtensionValidator
 
 class Course(models.Model):
@@ -72,11 +62,6 @@ class Module(models.Model):
     def __str__(self):
         return f"{self.title} ({self.course.title})"
 
-
-from django.db import models
-
-from django.db import models
-
 class Enrollment(models.Model):
     STATUS_CHOICES = [
         ('Not Completed', 'Not Completed'),
@@ -88,16 +73,16 @@ class Enrollment(models.Model):
     email = models.EmailField()
     mobile = models.CharField(max_length=15)
 
-    # MySQL requires short default values that fit max_length
+   
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
-        default='Not Completed'  # Make sure this matches one of the choices and max_length
+        default='Not Completed' 
     )
 
     progress = models.IntegerField(default=0)
 
-    module_status = models.JSONField(default=list)  # Available in Django 3.1+ and MySQL 5.7+
+    module_status = models.JSONField(default=list)  
     quiz_status = models.IntegerField(default=0)
     
 
@@ -122,10 +107,6 @@ class Enrollment(models.Model):
     def __str__(self):
         return f"{self.full_name} - {self.course.title}"
 
-
-
-
-from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Quiz(models.Model):

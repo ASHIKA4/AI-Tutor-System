@@ -170,4 +170,3 @@ class QuizViewSet(viewsets.ModelViewSet):
         serializer.save()
 
 
-

@@ -31,14 +31,16 @@ export default function AskAI() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const apiKey = "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";
+
+  // ✅ Updated API key
+  const apiKey = "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";
+
   const chatEndRef = useRef(null);
-  
+
   useEffect(() => {
     AOS.init({ duration: 800, once: false });
   }, []);
 
-  // Scroll to bottom when new message arrives
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
@@ -53,7 +55,7 @@ export default function AskAI() {
 
     const question = input.trim();
     const userMessage = { role: 'user', content: question };
-  
+
     setMessages((prev) => [...prev, userMessage]);
     setHistory((prev) => [
       { id: Date.now(), question, date: 'Just now' },
@@ -62,7 +64,7 @@ export default function AskAI() {
     setInput('');
     setIsLoading(true);
     setError(null);
-  
+
     try {
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -75,19 +77,18 @@ export default function AskAI() {
           messages: [...messages.map(msg => ({
             role: msg.role,
             content: msg.content
-          })), 
-          userMessage],
+          })), userMessage],
           temperature: 0.7,
           max_tokens: 1000,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        const aiMessage = { 
-          role: 'assistant', 
-          content: data.choices[0].message.content 
+        const aiMessage = {
+          role: 'assistant',
+          content: data.choices[0].message.content,
         };
         setMessages((prev) => [...prev, aiMessage]);
       } else {
@@ -115,9 +116,6 @@ export default function AskAI() {
       <h1 className="mb-4 text-center" data-aos="fade-down">
         AI Doubt Solver
       </h1>
-
-      {/* API Key Input - Only show if not already set */}
-      
 
       <Row>
         {/* Chat Column */}
@@ -230,7 +228,6 @@ export default function AskAI() {
                 </Card.Body>
               </Card>
             </Tab>
-            
           </Tabs>
         </Col>
       </Row>

@@ -18,12 +18,12 @@ const Enroll = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
   const [success, setSuccess] = useState(false);
-
+  
   if (!course) {
     return (
       <Container className="py-5 text-center">
         <h4 className="text-danger">No course data found. Please return to Course Catalog.</h4>
-        <Button variant="secondary" className="mt-3" onClick={() => navigate('/course-calalog')}>
+        <Button variant="secondary" className="mt-3" onClick={() => navigate('/course-catalog')}>
           Back to Courses
         </Button>
       </Container>
@@ -57,25 +57,22 @@ const Enroll = () => {
       // Get student ID from localStorage or wherever you store user data
       const studentId = localStorage.getItem('studentId'); // Adjust this based on your auth system
       
-      
       const enrollmentData = {
         full_name: formData.fullName,
         email: formData.email,
         mobile: formData.mobile,
         course_id: course.id,
         teacher: course.teacher,
-        student: studentId || 1 ,
-        module_status: [],
-        progress: 0 ,
-        quiz_status: 0// Fallback to 1 if no student ID, adjust as needed
+        student: studentId || 1,  // Fallback to a default student ID if not found
+        module_status: [], // Send an empty array or modify accordingly
+        progress: 0,
+        quiz_status: 0 // Assuming quiz status is 0 (not completed)
       };
 
       const response = await fetch('http://127.0.0.1:8000/enroll/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Add authorization header if needed
-          // 'Authorization': Token ${localStorage.getItem('token')}
         },
         body: JSON.stringify(enrollmentData)
       });
@@ -123,9 +120,8 @@ const Enroll = () => {
 
             <h3 className="fw-bold text-primary mb-3">{course.title}</h3>
             <ul className="list-unstyled">
-            <li><p><strong>Instructor:</strong> {course.teacher_detail?.username}</p></li>
+              <li><p><strong>Instructor:</strong> {course.teacher_detail?.username}</p></li>
               <li><strong>Level:</strong> {course.difficulty_level}</li>
-              {/* Duration not available in API - you might want to add it */}
               <li><strong>Duration:</strong> 8 weeks</li>
             </ul>
             <p className="text-muted mt-3">{course.description}</p>

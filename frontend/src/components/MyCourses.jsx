@@ -11,8 +11,7 @@ const MyCourses = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const studentId = localStorage.getItem('studentId')
-
+  const studentId = localStorage.getItem('studentId');
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -23,7 +22,7 @@ const MyCourses = () => {
       try {
         setLoading(true);
         setError(null);
-  
+
         const response = await axios.get(
           `http://127.0.0.1:8000/enroll/?student=${studentId}`,
           {
@@ -33,28 +32,24 @@ const MyCourses = () => {
           }
         );
 
-        
-  
         if (!response.data || !Array.isArray(response.data)) {
           throw new Error("Invalid data format from API");
         }
-  
+
         const transformedCourses = response.data.map(enrollment => {
-          const teacher = enrollment.course?.teacher || enrollment.teacher || {};
-          const teacherName = teacher.full_name || teacher.username || 'Unknown Instructor';
-          const progress = enrollment.progress_percentage || 
-                          (enrollment.completed_lessons / enrollment.total_lessons * 100) || 
-                          0;
-  
+          const teacherName = enrollment.course?.teacher_detail?.username || 'Unknown Instructor';
+          const progress = enrollment.progress_percentage ||
+            (enrollment.completed_lessons / enrollment.total_lessons * 100) || 0;
+
           return {
             id: enrollment.id,
             course_id: enrollment.course?.id,
             course_title: enrollment.course?.title || 'Untitled Course',
             course_category: enrollment.course?.category || 'General',
             instructor_name: teacherName,
-            enrolled_date: enrollment.enrolled_date 
-                          ? new Date(enrollment.enrolled_date).toLocaleDateString() 
-                          : new Date().toLocaleDateString(),
+            enrolled_date: enrollment.enrolled_date
+              ? new Date(enrollment.enrolled_date).toLocaleDateString()
+              : new Date().toLocaleDateString(),
             progress: Math.round(progress),
             next_lesson: enrollment.next_lesson || 1,
             description: enrollment.course?.description,
@@ -64,10 +59,10 @@ const MyCourses = () => {
             completed_lessons: enrollment.completed_lessons || 0
           };
         });
-  
+
         setCourses(transformedCourses.filter(course => course.status !== 'completed'));
         setCompletedCourses(transformedCourses.filter(course => course.status === 'completed'));
-  
+
       } catch (err) {
         console.error("Error fetching courses:", err);
         setError(err.message || "Failed to load courses");
@@ -78,12 +73,9 @@ const MyCourses = () => {
       }
     };
 
-    
-  
     fetchCourses();
   }, [studentId]);
-  
-  
+
   if (loading) {
     return (
       <Container fluid className="p-4 text-center">
@@ -138,9 +130,9 @@ const MyCourses = () => {
               <Col key={course.id} sm={12} md={6} lg={4} className="mb-4">
                 <Card className="course-card h-100 shadow-sm">
                   {course.thumbnail && (
-                    <Card.Img 
-                      variant="top" 
-                      src={course.thumbnail} 
+                    <Card.Img
+                      variant="top"
+                      src={course.thumbnail}
                       alt={course.course_title}
                       style={{ height: '180px', objectFit: 'cover' }}
                       onError={(e) => {
@@ -159,7 +151,7 @@ const MyCourses = () => {
                     <Card.Subtitle className="mb-2 text-muted">
                       Instructor: {course.instructor_name}
                     </Card.Subtitle>
-                    
+
                     <div className="mt-3 mb-2">
                       <div className="d-flex justify-content-between">
                         <span className="fw-semibold">Progress</span>
@@ -175,7 +167,7 @@ const MyCourses = () => {
                       className="w-100"
                       onClick={() =>
                         navigate(`/student/course/${course.course_id}/lesson/${course.next_lesson}`, {
-                          state: { course } 
+                          state: { course }
                         })
                       }
                     >
@@ -201,9 +193,9 @@ const MyCourses = () => {
               <Col key={course.id} sm={12} md={6} lg={4} className="mb-4">
                 <Card className="h-100 shadow-sm">
                   {course.thumbnail && (
-                    <Card.Img 
-                      variant="top" 
-                      src={course.thumbnail} 
+                    <Card.Img
+                      variant="top"
+                      src={course.thumbnail}
                       alt={course.course_title}
                       style={{ height: '180px', objectFit: 'cover' }}
                       onError={(e) => {
@@ -223,8 +215,8 @@ const MyCourses = () => {
                     <Card.Text>
                       <strong>Completed on:</strong> {course.enrolled_date}
                     </Card.Text>
-                    <Button 
-                      variant="outline-dark" 
+                    <Button
+                      variant="outline-dark"
                       className="w-100"
                       onClick={() => navigate(`/student/course/${course.course_id}`)}
                     >
